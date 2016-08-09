@@ -44,8 +44,8 @@ function checkWinner(){
 }
 
 function reset(){
-  var userChoice1 = '';
-  var userChoice2 = '';
+  userChoice1 = '';
+  userChoice2 = '';
 }
 
 });
