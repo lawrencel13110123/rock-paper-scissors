@@ -4,6 +4,11 @@ body{
 	background-size: cover;
   color: white;
 }
-.choice-img{
-  height: 256px;
+#choice-section{
+  margin-top: 20px;
+}
+.choice{
+  display: inline-block;
+  border: 1px solid black;
+  margin: 5px;
 }
