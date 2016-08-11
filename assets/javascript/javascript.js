@@ -5,11 +5,22 @@ $(document).ready(function(){
     databaseURL: "https://rock-paper-scissors-50d2e.firebaseio.com",
     storageBucket: "rock-paper-scissors-50d2e.appspot.com",
   };
+  firebase.initializeApp(config);
+  database = firebase.database();
 
   $('#submit-button').on('click', function(){
-      var name = $('#name').val();
-      console.log(name);
-       $('#name').val('');
+      newPlayer = {
+        name: $('#name').val(),
+        choice: ''
+      }
+      $('#name').val('');
+      database.ref('players').push(newPlayer);
+  });
+
+  database.ref('/players').on("value", function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      console.log(childSnapshot.val());
+    });
   });
 
 
