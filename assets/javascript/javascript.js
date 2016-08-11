@@ -5,24 +5,26 @@ $(document).ready(function(){
     databaseURL: "https://rock-paper-scissors-50d2e.firebaseio.com",
     storageBucket: "rock-paper-scissors-50d2e.appspot.com",
   };
-  var userName1 = 'Spencer';
-  var userName2 = 'Leah';
-  var userChoice1 = '';
-  var userChoice2 = '';
+
+  $('#submit-button').on('click', function(){
+      var name = $('#name').val();
+      console.log(name);
+       $('#name').val('');
+  });
 
 
-$('.choice').on('click', function(){
-  if(userChoice1 === ''){
-    userChoice1 = $(this).data('choice');
-    console.log(userName1 + ' chose ' + userChoice1);
-  } else {
-    userChoice2 = $(this).data('choice');
-    console.log(userName2 + ' chose ' + userChoice2);
-  }
-  if(userChoice1 != '' && userChoice2 != ''){
-    checkWinner();
-  }
-});
+// $('.choice').on('click', function(){
+//   if(userChoice1 === ''){
+//     userChoice1 = $(this).data('choice');
+//     console.log(userName1 + ' chose ' + userChoice1);
+//   } else {
+//     userChoice2 = $(this).data('choice');
+//     console.log(userName2 + ' chose ' + userChoice2);
+//   }
+//   if(userChoice1 != '' && userChoice2 != ''){
+//     checkWinner();
+//   }
+// });
 
 function checkWinner(){
   if(userChoice1 === userChoice2){
