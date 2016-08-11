@@ -5,37 +5,59 @@ $(document).ready(function(){
     databaseURL: "https://rock-paper-scissors-50d2e.firebaseio.com",
     storageBucket: "rock-paper-scissors-50d2e.appspot.com",
   };
+  var playerKey;
+  var userChoice1;
+  var userChoice2;
   firebase.initializeApp(config);
   database = firebase.database();
 
+  // connectionsRef references a secific location in our database.
+// All of our connections will be stored in this directory.
+var connectionsRef = database.ref("/players");
+
+// '.info/connected' is a special location provided by Firebase that is updated every time the client's connection state changes.
+// '.info/connected' is a boolean value, true if the client is connected and false if they are not.
+var connectedRef = database.ref(".info/connected");
+
+// When the client's connection state changes...
+connectedRef.on("value", function(snap) {
+
+	// If they are connected..
+	if( snap.val() ) {
+
+		// Add user to the connections list.
+		var con = connectionsRef.push(true);
+    playerKey = con.key;
+    console.log(playerKey);
+		// Remove user from the connection list when they disconnect.
+		con.onDisconnect().remove();
+
+	};
+
+});
+
   $('#submit-button').on('click', function(){
-      newPlayer = {
-        name: $('#name').val(),
+      var name = $('#name').val();
+      console.log(name);
+      database.ref('players/' + playerKey).set({
+        name: name,
         choice: ''
-      }
-      $('#name').val('');
-      database.ref('players').push(newPlayer);
+      });
   });
 
-  database.ref('/players').on("value", function(snapshot) {
-    snapshot.forEach(function(childSnapshot) {
-      console.log(childSnapshot.val());
-    });
+  // database.ref('/players').on("value", function(snapshot) {
+  //   snapshot.forEach(function(childSnapshot) {
+  //
+  //   });
+  // });
+
+
+$('.choice').on('click', function(){
+  var choice = $(this).data('choice');
+  database.ref('players/' + playerKey).update({
+    choice: choice
   });
-
-
-// $('.choice').on('click', function(){
-//   if(userChoice1 === ''){
-//     userChoice1 = $(this).data('choice');
-//     console.log(userName1 + ' chose ' + userChoice1);
-//   } else {
-//     userChoice2 = $(this).data('choice');
-//     console.log(userName2 + ' chose ' + userChoice2);
-//   }
-//   if(userChoice1 != '' && userChoice2 != ''){
-//     checkWinner();
-//   }
-// });
+});
 
 function checkWinner(){
   if(userChoice1 === userChoice2){
