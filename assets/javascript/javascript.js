@@ -5,10 +5,8 @@ $(document).ready(function(){
     databaseURL: "https://rock-paper-scissors-50d2e.firebaseio.com",
     storageBucket: "rock-paper-scissors-50d2e.appspot.com",
   };
-  var playerCount;
+
   firebase.initializeApp(config);
   var database = firebase.database();
-
-
 
 });
