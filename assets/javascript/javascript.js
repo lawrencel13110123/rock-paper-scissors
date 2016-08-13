@@ -8,5 +8,28 @@ $(document).ready(function(){
 
   firebase.initializeApp(config);
   var database = firebase.database();
+  var name;
+  var connectedRef = firebase.database().ref('.info/connected');
 
+  $('#submit-button').on('click', function(){
+    name = $('#name').val().trim();
+    var myConnectionsRef = firebase.database().ref('users/' + name);
+    var connectedRef = firebase.database().ref('.info/connected');
+    connectedRef.on('value', function(snap) {
+      if (snap.val()) {
+        var con = myConnectionsRef.push(true);
+        myConnectionsRef.onDisconnect().remove();
+      }
+    });
+    database.ref('users/' + name).update({
+      name: name
+    })
+  });
+
+  $('.choice').on('click', function(){
+    var choice = $(this).data('choice');
+    database.ref('users/' + name).update({
+      choice: choice
+    })
+  });
 });
