@@ -11,6 +11,8 @@ $(document).ready(function(){
   var name;
   var connectedRef = firebase.database().ref('.info/connected');
   var playerCount;
+  var player1;
+  var player2;
 
   database.ref('users').on('value', function(snapshot){
     playerCount = snapshot.numChildren();
@@ -37,5 +39,15 @@ $(document).ready(function(){
     database.ref('users/' + playerCount).update({
       choice: choice
     })
+  });
+
+  database.ref('users/1').on('value', function(snapshot){
+    player1 = snapshot.val().name;
+    $('#player1').text(player1);
+  });
+
+  database.ref('users/2').on('value', function(snapshot){
+    player2 = snapshot.val().name;
+    $('#player2').text(player2);
   });
 });
