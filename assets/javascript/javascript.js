@@ -8,46 +8,5 @@ $(document).ready(function(){
 
   firebase.initializeApp(config);
   var database = firebase.database();
-  var name;
-  var connectedRef = firebase.database().ref('.info/connected');
-  var playerCount;
-  var player1;
-  var player2;
-
-  database.ref('users').on('value', function(snapshot){
-    playerCount = snapshot.numChildren();
-  })
-
-  $('#submit-button').on('click', function(){
-    name = $('#name').val().trim();
-    playerCount++;
-    var myConnectionsRef = firebase.database().ref('users/' + playerCount);
-    var connectedRef = firebase.database().ref('.info/connected');
-    connectedRef.on('value', function(snap) {
-      if (snap.val()) {
-        var con = myConnectionsRef.push(true);
-        myConnectionsRef.onDisconnect().remove();
-      }
-    });
-    database.ref('users/' + playerCount).update({
-      name: name
-    });
-  });
-
-  $('.choice').on('click', function(){
-    var choice = $(this).data('choice');
-    database.ref('users/' + playerCount).update({
-      choice: choice
-    })
-  });
-
-  database.ref('users/1').on('value', function(snapshot){
-    player1 = snapshot.val().name;
-    $('#player1').text(player1);
-  });
-
-  database.ref('users/2').on('value', function(snapshot){
-    player2 = snapshot.val().name;
-    $('#player2').text(player2);
-  });
+  
 });
