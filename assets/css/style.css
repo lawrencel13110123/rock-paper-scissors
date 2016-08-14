@@ -9,13 +9,6 @@ body{
 #user-section{
   margin-top: 30px;
 }
-.user{
-  display: inline-block;
-  height: 295px;
-  width: 256px;
-  margin: 5px;
-  border: 1px solid black;
-}
 #choice-section{
   margin-top: 20px;
 }
@@ -26,5 +19,8 @@ body{
   color: black;
 }
 #choice-section{
+  display: none;
+}
+#play-again{
   display: none;
 }

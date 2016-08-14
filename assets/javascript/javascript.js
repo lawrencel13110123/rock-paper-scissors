@@ -81,7 +81,8 @@ $(document).ready(function(){
   }
 
   function changeDom1() {
-    console.log('CHANGEDOM1 HIT');
+    gameObject.userId = 1;
+    console.log(gameObject.userId)
     data.once("value", function(snapshot) {
       gameObject.userId = 1;
       // gameObject.turn = snapshot.val().turn;
@@ -100,7 +101,7 @@ $(document).ready(function(){
   				if (player2Exists && snapshot.val().turn == 1) {
             gameObject.name2 = snapshot.val().players[2].name;
   					$("#player2").text(gameObject.name2);
-            $('#instructions').text('Player 2 has arrived. You are playing against ' + gameObject.name2 + '. It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+            $('#instructions').text('You are playing against ' + gameObject.name2 + '. It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
             $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
             $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
             $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
@@ -110,6 +111,8 @@ $(document).ready(function(){
 		}
 
     function changeDom2() {
+      gameObject.userId = 2;
+      console.log(gameObject.userId);
 			data.once("value", function(snapshot) {
         gameObject.name = snapshot.val().players[1].name;
         console.log(gameObject.name);
@@ -310,13 +313,34 @@ $(document).ready(function(){
       $("#ties2").text('Ties: ' + gameObject.ties2);
       }
   }
-    reset();
+    setTimeout(resetBoth(), 5000);
   }
 
-  function reset(){
-    data.update({turn: 0});
+  function resetBoth(){
+    data.update({turn: 1});
     data.child('players').child('1').update({pick: ''});
     data.child('players').child('2').update({pick: ''});
+    if(gameObject.userId == 1){
+      console.log('reset1');
+      setTimeout(reset1, 5000);
+    } else{
+      console.log('reset2');
+      setTimeout(reset2, 5000);
+    }
+  }
+
+  function reset1(){
+    $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+    $('#choice1').text('');
+    $('#choice2').text('');
+    $('#choice-section').show();
+  }
+
+  function reset2(){
+    $('#instructions').text('Waiting for ' + gameObject.name2 + ' to choose.');
+    $('#choice1').text('');
+    $('#choice2').text('');
     $('#choice-section').hide();
   }
+
 });
