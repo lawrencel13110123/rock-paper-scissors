@@ -48,7 +48,7 @@ $(document).ready(function(){
     var playersRef = data.child('players');
 
     if(!player1Exists){
-
+      gameObject.name = name;
       player1Ref = playersRef.child('1');
 
       player1Ref.set({
@@ -62,6 +62,7 @@ $(document).ready(function(){
       changeDom1();
     } else if(player1Exists && !player2Exists){
       player2Ref = playersRef.child('2');
+      gameObject.name2 = name;
       player2Ref.set({
         name: name,
         pick: gameObject.pick2,
@@ -74,7 +75,6 @@ $(document).ready(function(){
       data.update({
         turn: 1
       });
-      // player2Ref.onDisconnect().resetTurn();
     } else if(player1Exists && player2Exists){
       alert('The game is full.');
     }
@@ -98,18 +98,20 @@ $(document).ready(function(){
 			data.on("value", function(snapshot) {
 				var player2Exists = snapshot.child('players').child('2').exists();
 				if (player2Exists) {
+          gameObject.name2 = snapshot.val().players[2].name;
 					$("#player2").text(snapshot.val().players[2].name);
-          $('#instructions').text('Player 2 has arrived. It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+          $('#instructions').text('Player 2 has arrived. You are playing against ' + gameObject.name2 + '. It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+          $('#choice-section').show();
 				}
 			});
 		}
 
     function changeDom2() {
 			data.once("value", function(snapshot) {
-				$('#instructions').text('It is ' + snapshot.val().players[1].name + '\'s turn.');
-				$("player1").text(snapshot.val().players[1].name);
-        $("player2").text(snapshot.val().players[2].name);
-				gameObject.userId = 2;
+        gameObject.name = snapshot.val().players[1].name
+				$('#instructions').text('Welcome ' + gameObject.name2 + '. You are player 2. You will be playing against ' + gameObject.name + '. It is ' + gameObject.name + '\s turn.');
+				$("player1").text(gameObject.name);
+        $("player2").text(gameObject.name2);
         $("#wins2").text('Wins: ' + gameObject.wins2);
         $("#losses2").text('Losses: ' + gameObject.losses2);
         $("#ties2").text('Ties: ' + gameObject.ties2);
@@ -124,12 +126,17 @@ $(document).ready(function(){
       var player1Ref = playersRef.child('1');
       $('.choice').on('click', function(){
         if(gameObject.turn == 1){
+          gameObject.pick = $(this).data('choice');
           player1Ref.update({pick: $(this).data('choice')});
-            data.update({turn: 2});
+          data.update({turn: 2});
         }
+        $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice');
+        $('#choice-section').hide();
       });
     }
     function choice2() {
+      $('#instructions').text('It is your turn.');
+      $('#choice-section').show();
       var playersRef = data.child('players');
       var player2Ref = playersRef.child('2');
       $('.choice').on('click', function(){
