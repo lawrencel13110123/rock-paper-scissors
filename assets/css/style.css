@@ -11,8 +11,9 @@ body{
 }
 .user{
   display: inline-block;
-  height: 256px;
+  height: 295px;
   width: 256px;
+  margin: 5px;
   border: 1px solid black;
 }
 #choice-section{

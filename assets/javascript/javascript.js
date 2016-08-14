@@ -68,6 +68,7 @@ $(document).ready(function(){
         ties: gameObject.ties
       });
       player2Ref.onDisconnect().remove();
+      // player2Ref.onDisconnect().resetTurn();
     } else if(player1Exists && player2Exists){
       alert('The game is full.');
     }
