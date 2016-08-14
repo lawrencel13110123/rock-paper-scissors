@@ -317,5 +317,6 @@ $(document).ready(function(){
     data.update({turn: 0});
     data.child('players').child('1').update({pick: ''});
     data.child('players').child('2').update({pick: ''});
+    $('#choice-section').hide();
   }
 });
