@@ -58,19 +58,256 @@ $(document).ready(function(){
         ties: gameObject.ties
       });
       player1Ref.onDisconnect().remove();
+      changeDom1();
     } else if(player1Exists && !player2Exists){
       player2Ref = playersRef.child('2');
       player2Ref.set({
-        name: gameObject.name,
-        pick: gameObject.pick,
-        wins: gameObject.wins,
-        losses: gameObject.losses,
-        ties: gameObject.ties
+        name: gameObject.name2,
+        pick: gameObject.pick2,
+        wins: gameObject.wins2,
+        losses: gameObject.losses2,
+        ties: gameObject.ties2
       });
       player2Ref.onDisconnect().remove();
+      changeDom2();
+      data.update({
+        turn: 1
+      });
       // player2Ref.onDisconnect().resetTurn();
     } else if(player1Exists && player2Exists){
       alert('The game is full.');
     }
+  }
+
+  function changeDom1() {
+    data.once("value", function(snapshot) {
+      gameObject.userId = 1;
+      // gameObject.turn = snapshot.val().turn;
+      $("#instructions").text("Hi " + gameObject.name + "! You are player 1. Waiting for a second player.");
+      $("#player1").text(gameObject.name);
+      $("#wins1").text('Wins: ' + gameObject.wins);
+      $("#losses1").text('Losses: ' + gameObject.losses);
+      $("#ties1").text('Ties: ' + gameObject.ties);
+			});
+      checkPlayer2();
+
+		}
+
+    function checkPlayer2() {
+			data.on("value", function(snapshot) {
+				var player2Exists = snapshot.child('players').child('2').exists();
+				if (player2Exists) {
+					$("#player2").text(snapshot.val().players[2].name);
+          $('#instructions').text('Player 2 has arrived. It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+				}
+			});
+		}
+
+    function changeDom2() {
+			data.once("value", function(snapshot) {
+				$('#instructions').text('It is ' + snapshot.val().players[1].name + '\'s turn.');
+				$("player1").text(snapshot.val().players[1].name);
+        $("player2").text(snapshot.val().players[2].name);
+				gameObject.userId = 2;
+        $("#wins2").text('Wins: ' + gameObject.wins2);
+        $("#losses2").text('Losses: ' + gameObject.losses2);
+        $("#ties2").text('Ties: ' + gameObject.ties2);
+        $("#wins1").text('Wins: ' + snapshot.val().players[1].wins);
+        $("#losses1").text('Losses: ' + snapshot.val().players[1].losses);
+        $("#ties1").text('Ties: ' + snapshot.val().players[1].ties);
+			});
+		}
+
+    function choice1() {
+      console.log('function choice1');
+      var playersRef = data.child('players');
+      var player1Ref = playersRef.child('1');
+      $('.choice').on('click', function(){
+        if(gameObject.turn == 1){
+          player1Ref.update({pick: $(this).data('choice')});
+            data.update({turn: 2});
+        }
+      });
+    }
+    function choice2() {
+      console.log('function choice2');
+      var playersRef = data.child('players');
+      var player2Ref = playersRef.child('2');
+      $('.choice').on('click', function(){
+        if(gameObject.turn == 2){
+          console.log('firebase 2 update');
+          player2Ref.update({pick: $(this).data('choice')});
+          data.update({turn: 3});
+        }
+      });
+    }
+		data.on("value", function(snapshot) {
+      if(snapshot.val().turn == 1){
+        gameObject.turn = 1;
+        choice1();
+      }
+			if (snapshot.val().turn == 2) {
+        gameObject.turn = 2;
+				choice2();
+			}
+			if (snapshot.val().turn == 3) {
+        gameObject.turn = 3;
+				logic();
+			}
+		});
+
+  function logic() {
+  data.once('value', function(snapshot){
+    gameObject.pick = snapshot.val().players[1].pick;
+    console.log(gameObject.pick);
+    gameObject.pick2 = snapshot.val().players[2].pick;
+    console.log(gameObject.pick2);
+  });
+    var p1 = gameObject.pick;
+    var p2 = gameObject.pick2;
+    var playersRef = data.child('players');
+    var player1Ref = playersRef.child('1');
+    var player2Ref = playersRef.child('2');
+    if (p1 == p2) {
+      $('#instructions').text('It\'s a tie!');
+      $('#choice1').text(gameObject.name + ' chose ' + p1);
+      $('#choice2').text(gameObject.name2 + ' chose ' + p2);
+      gameObject.ties++;
+      player1Ref.update({
+        ties: gameObject.ties
+      });
+      gameObject.ties2++;
+      player2Ref.update({
+        ties: gameObject.ties2
+      });
+    $("#wins1").text('Wins: ' + gameObject.wins);
+    $("#losses1").text('Losses: ' + gameObject.losses);
+    $("#ties1").text('Ties: ' + gameObject.ties);
+    $("#wins2").text('Wins: ' + gameObject.wins2);
+    $("#losses2").text('Losses: ' + gameObject.losses2);
+    $("#ties2").text('Ties: ' + gameObject.ties2);
+    }
+  // } else if(p1 == 'rock'){
+  //     if(p2 == 'scissors'){
+  //       $('#instructions').text('It\'s a tie!');
+  //       $('#choice1').html(gameObject.name + ' chose ' + p1);
+  //       $('#choice1').html(gameObject.name + ' chose ' + p2);
+  //       gameObject.wins++;
+  //       player1Ref.update({
+  //         wins: gameObject.wins
+  //       });
+  //       gameObject.losses2++;
+  //       player2Ref.update({
+  //         losses: gameObject.losses2
+  //       });
+  //       $("#wins1").text('Wins: ' + gameObject.wins);
+  //       $("#losses1").text('Losses: ' + gameObject.losses);
+  //       $("#ties1").text('Ties: ' + gameObject.ties);
+  //       $("#wins2").text('Wins: ' + gameObject.wins2);
+  //       $("#losses2").text('Losses: ' + gameObject.losses2);
+  //       $("#ties2").text('Ties: ' + gameObject.ties2);
+  //   } else{
+  //     $('#instructions').text('It\'s a tie!');
+  //     $('#choice1').html(gameObject.name + ' chose ' + p1);
+  //     $('#choice1').html(gameObject.name + ' chose ' + p2);
+  //     gameObject.losses++;
+  //     player1Ref.update({
+  //       losses: gameObject.losses
+  //     });
+  //     gameObject.wins2++;
+  //     player2Ref.update({
+  //       wins: gameObject.wins2
+  //     });
+  //     $("#wins1").text('Wins: ' + gameObject.wins);
+  //     $("#losses1").text('Losses: ' + gameObject.losses);
+  //     $("#ties1").text('Ties: ' + gameObject.ties);
+  //     $("#wins2").text('Wins: ' + gameObject.wins2);
+  //     $("#losses2").text('Losses: ' + gameObject.losses2);
+  //     $("#ties2").text('Ties: ' + gameObject.ties2);
+  //   }
+  // } else if(p1 == 'paper'){
+  //   if(p2 == 'rock'){
+  //     $('#instructions').text('It\'s a tie!');
+  //     $('#choice1').html(gameObject.name + ' chose ' + p1);
+  //     $('#choice1').html(gameObject.name + ' chose ' + p2);
+  //     gameObject.wins++;
+  //     player1Ref.update({
+  //       wins: gameObject.wins
+  //     });
+  //     gameObject.losses2++;
+  //     player2Ref.update({
+  //       losses: gameObject.losses2
+  //     });
+  //     $("#wins1").text('Wins: ' + gameObject.wins);
+  //     $("#losses1").text('Losses: ' + gameObject.losses);
+  //     $("#ties1").text('Ties: ' + gameObject.ties);
+  //     $("#wins2").text('Wins: ' + gameObject.wins2);
+  //     $("#losses2").text('Losses: ' + gameObject.losses2);
+  //     $("#ties2").text('Ties: ' + gameObject.ties2);
+  //   } else{
+  //     $('#instructions').text('It\'s a tie!');
+  //     $('#choice1').html(gameObject.name + ' chose ' + p1);
+  //     $('#choice1').html(gameObject.name + ' chose ' + p2);
+  //     gameObject.losses++;
+  //     player1Ref.update({
+  //       losses: gameObject.losses
+  //     });
+  //     gameObject.wins2++;
+  //     player2Ref.update({
+  //       wins: gameObject.wins2
+  //     });
+  //     $("#wins1").text('Wins: ' + gameObject.wins);
+  //     $("#losses1").text('Losses: ' + gameObject.losses);
+  //     $("#ties1").text('Ties: ' + gameObject.ties);
+  //     $("#wins2").text('Wins: ' + gameObject.wins2);
+  //     $("#losses2").text('Losses: ' + gameObject.losses2);
+  //     $("#ties2").text('Ties: ' + gameObject.ties2);
+  //   }
+  // } else if(p1 == 'scissors'){
+  //   if(p2 == 'paper'){
+  //     $('#instructions').text('It\'s a tie!');
+  //     $('#choice1').html(gameObject.name + ' chose ' + p1);
+  //     $('#choice1').html(gameObject.name + ' chose ' + p2);
+  //     gameObject.wins++;
+  //     player1Ref.update({
+  //       wins: gameObject.wins
+  //     });
+  //     gameObject.losses2++;
+  //     player2Ref.update({
+  //       losses: gameObject.losses2
+  //     });
+  //     $("#wins1").text('Wins: ' + gameObject.wins);
+  //     $("#losses1").text('Losses: ' + gameObject.losses);
+  //     $("#ties1").text('Ties: ' + gameObject.ties);
+  //     $("#wins2").text('Wins: ' + gameObject.wins2);
+  //     $("#losses2").text('Losses: ' + gameObject.losses2);
+  //     $("#ties2").text('Ties: ' + gameObject.ties2);
+  //   } else{
+  //     $('#instructions').text('It\'s a tie!');
+  //     $('#choice1').html(gameObject.name + ' chose ' + p1);
+  //     $('#choice1').html(gameObject.name + ' chose ' + p2);
+  //     gameObject.losses++;
+  //     player1Ref.update({
+  //       losses: gameObject.losses
+  //     });
+  //     gameObject.wins2++;
+  //     player2Ref.update({
+  //       wins: gameObject.wins2
+  //     });
+  //     $("#wins1").text('Wins: ' + gameObject.wins);
+  //     $("#losses1").text('Losses: ' + gameObject.losses);
+  //     $("#ties1").text('Ties: ' + gameObject.ties);
+  //     $("#wins2").text('Wins: ' + gameObject.wins2);
+  //     $("#losses2").text('Losses: ' + gameObject.losses2);
+  //     $("#ties2").text('Ties: ' + gameObject.ties2);
+  //     }
+  //   }
+    reset();
+  }
+
+  function reset(){
+    data.update({turn: 0});
+    data.child('players').child('1').update({pick: ''});
+    data.child('players').child('2').update({pick: ''});
   }
 });
