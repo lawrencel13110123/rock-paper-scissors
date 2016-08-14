@@ -197,7 +197,7 @@ $(document).ready(function(){
     $("#ties2").text('Ties: ' + gameObject.ties2);
   } else if(p1 == 'rock'){
       if(p2 == 'scissors'){
-        $('#instructions').text(gameObject.name + 'Wins!');
+        $('#instructions').text(gameObject.name + ' wins!');
         $('#choice1').text(gameObject.name + ' chose ' + p1);
         $('#choice2').text(gameObject.name2 + ' chose ' + p2);
         gameObject.wins++;
@@ -215,7 +215,7 @@ $(document).ready(function(){
         $("#losses2").text('Losses: ' + gameObject.losses2);
         $("#ties2").text('Ties: ' + gameObject.ties2);
     } else{
-      $('#instructions').text(gameObject.name2 + 'wins!');
+      $('#instructions').text(gameObject.name2 + ' wins!');
       $('#choice1').text(gameObject.name + ' chose ' + p1);
       $('#choice2').text(gameObject.name2 + ' chose ' + p2);
       gameObject.losses++;
@@ -235,7 +235,7 @@ $(document).ready(function(){
     }
   } else if(p1 == 'paper'){
     if(p2 == 'rock'){
-      $('#instructions').text(gameObject.name + 'Wins!');
+      $('#instructions').text(gameObject.name + ' wins!');
       $('#choice1').text(gameObject.name + ' chose ' + p1);
       $('#choice2').text(gameObject.name2 + ' chose ' + p2);
       gameObject.wins++;
@@ -253,7 +253,7 @@ $(document).ready(function(){
       $("#losses2").text('Losses: ' + gameObject.losses2);
       $("#ties2").text('Ties: ' + gameObject.ties2);
     } else{
-      $('#instructions').text(gameObject.name2 + 'wins!');
+      $('#instructions').text(gameObject.name2 + ' wins!');
       $('#choice1').text(gameObject.name + ' chose ' + p1);
       $('#choice2').text(gameObject.name2 + ' chose ' + p2);
       gameObject.losses++;
@@ -273,7 +273,7 @@ $(document).ready(function(){
     }
   } else if(p1 == 'scissors'){
     if(p2 == 'paper'){
-      $('#instructions').text(gameObject.name + 'Wins!');
+      $('#instructions').text(gameObject.name + ' wins!');
       $('#choice1').text(gameObject.name + ' chose ' + p1);
       $('#choice2').text(gameObject.name2 + ' chose ' + p2);
       gameObject.wins++;
@@ -291,7 +291,7 @@ $(document).ready(function(){
       $("#losses2").text('Losses: ' + gameObject.losses2);
       $("#ties2").text('Ties: ' + gameObject.ties2);
     } else{
-      $('#instructions').text(gameObject.name2 + 'wins!');
+      $('#instructions').text(gameObject.name2 + ' wins!');
       $('#choice1').text(gameObject.name + ' chose ' + p1);
       $('#choice2').text(gameObject.name2 + ' chose ' + p2);
       gameObject.losses++;
