@@ -85,7 +85,6 @@ $(document).ready(function(){
     console.log(gameObject.userId)
     data.once("value", function(snapshot) {
       gameObject.userId = 1;
-      // gameObject.turn = snapshot.val().turn;
       $("#instructions").text("Hi " + gameObject.name + "! You are player 1. Waiting for a second player.");
       $("#player1").text(gameObject.name);
       $("#wins1").text('Wins: ' + gameObject.wins);
@@ -170,7 +169,8 @@ $(document).ready(function(){
 		});
 
   function logic() {
-  data.update({turn: 0});
+  console.log('Logic Hit');
+  data.update({turn: 1});
   data.once('value', function(snapshot){
     gameObject.pick = snapshot.val().players[1].pick;
     gameObject.pick2 = snapshot.val().players[2].pick;
@@ -313,11 +313,10 @@ $(document).ready(function(){
       $("#ties2").text('Ties: ' + gameObject.ties2);
       }
   }
-    setTimeout(resetBoth(), 5000);
+    resetBoth();
   }
 
   function resetBoth(){
-    data.update({turn: 1});
     data.child('players').child('1').update({pick: ''});
     data.child('players').child('2').update({pick: ''});
     if(gameObject.userId == 1){
@@ -337,7 +336,7 @@ $(document).ready(function(){
   }
 
   function reset2(){
-    $('#instructions').text('Waiting for ' + gameObject.name2 + ' to choose.');
+    $('#instructions').text('Waiting for ' + gameObject.name + ' to choose.');
     $('#choice1').text('');
     $('#choice2').text('');
     $('#choice-section').hide();
