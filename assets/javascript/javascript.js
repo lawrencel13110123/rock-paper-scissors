@@ -67,6 +67,21 @@ $(document).ready(function(){
         $("#wins1").text('Wins: ' + gameObject.wins);
         $("#losses1").text('Losses: ' + gameObject.losses);
         $("#ties1").text('Ties: ' + gameObject.ties);
+        data.once("value", function(snapshot) {
+            var player2Exists = snapshot.child('players').child('2').exists();
+            if (player2Exists) {
+              gameObject.name2 = snapshot.val().players[2].name;
+              $("#player2").text(gameObject.name2);
+              $('#choice1').text('');
+              $('#choice2').text('');
+              $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+              $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
+              $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
+              $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
+              $('#choice-section').show();
+              data.update({turn: 1});
+            }
+        });
         player1Ref.onDisconnect().remove();
       } else if(player1Exists && !player2Exists){
         gameObject.userId = 2;
