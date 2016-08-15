@@ -312,7 +312,7 @@ $(document).ready(function(){
         $("#ties2").text('Ties: ' + gameObject.ties2);
       });
     }
-    setTimeout(reset, 5000);
+    setTimeout(reset, 2000);
   }
 
   function reset(){
