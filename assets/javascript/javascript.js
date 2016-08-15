@@ -120,7 +120,7 @@ $(document).ready(function(){
         gameObject.pick = $(this).data('choice');
         player1Ref.update({pick: $(this).data('choice')});
         data.update({turn: 2});
-        $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice');
+        $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice.');
         $('#choice-section').hide();
       });
     }
@@ -144,17 +144,18 @@ $(document).ready(function(){
 
   function checkWinner(){
     if(gameObject.turn == 3){
-      console.log('checkWinner function hit.');
-      data.update({turn: 0});
+      if(gameObject.userId == '1'){
+        data.update({turn: 0});
+      }
       data.once('value', function(snapshot){
         var player1Ref = data.child('players').child('1');
         var player2Ref = data.child('players').child('2');
         var p1 = snapshot.val().players[1].pick;
         var p2 = snapshot.val().players[2].pick;
+        gameObject.name = snapshot.val().players[1].name;
+        gameObject.name2 = snapshot.val().players[2].name;
         if (p1 == p2) {
           $('#instructions').text('It\'s a tie!');
-          $('#choice1').text(snapshot.val().players[1].name + ' chose ' + p1);
-          $('#choice2').text(snapshot.val().players[2].name + ' chose ' + p2);
           gameObject.ties++;
           player1Ref.update({
             ties: gameObject.ties
@@ -163,13 +164,81 @@ $(document).ready(function(){
           player2Ref.update({
             ties: gameObject.ties2
           });
+        } else if(p1 == 'rock'){
+            if(p2 == 'scissors'){
+              $('#instructions').text(gameObject.name + ' wins!');
+              gameObject.wins++;
+              player1Ref.update({
+                wins: gameObject.wins
+              });
+              gameObject.losses2++;
+              player2Ref.update({
+                losses: gameObject.losses2
+              });
+          } else{
+            $('#instructions').text(gameObject.name2 + ' wins!');
+            gameObject.losses++;
+            player1Ref.update({
+              losses: gameObject.losses
+            });
+            gameObject.wins2++;
+            player2Ref.update({
+              wins: gameObject.wins2
+            });
+          }
+        } else if(p1 == 'paper'){
+          if(p2 == 'rock'){
+            $('#instructions').text(gameObject.name + ' wins!');
+            gameObject.wins++;
+            player1Ref.update({
+              wins: gameObject.wins
+            });
+            gameObject.losses2++;
+            player2Ref.update({
+              losses: gameObject.losses2
+            });
+          } else{
+            $('#instructions').text(gameObject.name2 + ' wins!');
+            gameObject.losses++;
+            player1Ref.update({
+              losses: gameObject.losses
+            });
+            gameObject.wins2++;
+            player2Ref.update({
+              wins: gameObject.wins2
+            });
+          }
+        } else if(p1 == 'scissors'){
+          if(p2 == 'paper'){
+            $('#instructions').text(gameObject.name + ' wins!');
+            gameObject.wins++;
+            player1Ref.update({
+              wins: gameObject.wins
+            });
+            gameObject.losses2++;
+            player2Ref.update({
+              losses: gameObject.losses2
+            });
+          } else{
+            $('#instructions').text(gameObject.name2 + ' wins!');
+            gameObject.losses++;
+            player1Ref.update({
+              losses: gameObject.losses
+            });
+            gameObject.wins2++;
+            player2Ref.update({
+              wins: gameObject.wins2
+            });
+            }
+        }
+        $('#choice1').text(snapshot.val().players[1].name + ' chose ' + p1 + '.');
+        $('#choice2').text(snapshot.val().players[2].name + ' chose ' + p2 + '.');
         $("#wins1").text('Wins: ' + gameObject.wins);
         $("#losses1").text('Losses: ' + gameObject.losses);
         $("#ties1").text('Ties: ' + gameObject.ties);
         $("#wins2").text('Wins: ' + gameObject.wins2);
         $("#losses2").text('Losses: ' + gameObject.losses2);
         $("#ties2").text('Ties: ' + gameObject.ties2);
-        }
       });
     }
     setTimeout(reset, 5000);
@@ -177,10 +246,10 @@ $(document).ready(function(){
 
   function reset(){
     data.update({turn: 1});
-    // if(gameObject.userId == '2'){
-    //   $('#choice1').text('');
-    //   $('#choice2').text('');
-    //   $('#instructions').text('Hi ' + name + '. You are player 2. Waiting for ' + gameObject.name + ' to make a choice.');
-    // }
+    if(gameObject.userId == '2'){
+      $('#choice1').text('');
+      $('#choice2').text('');
+      $('#instructions').text('Hi ' + name + '. You are player 2. Waiting for ' + gameObject.name + ' to make a choice.');
+    }
   }
 });
