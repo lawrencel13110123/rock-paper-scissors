@@ -26,7 +26,59 @@ $(document).ready(function(){
 		turn: 0,
   };
 
-    data.onDisconnect().update({turn: 0});
+  data.onDisconnect().update({turn: 0});
+
+  data.child('players').on('child_removed', function(){
+    data.once('value', function(snapshot){
+      var player1Exists = snapshot.child('players').child('1').exists();
+      var player2Exists = snapshot.child('players').child('2').exists();
+      if(player1Exists && !player2Exists){
+        $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
+        $('#choice1').text('');
+        $('#choice2').text('');
+        $('#player2').text('');
+        $('#wins2').text('');
+        $('#losses2').text('');
+        $('#ties2').text('');
+        $('#choice-section').hide();
+      } else if (player2Exists && !player1Exists){
+        $('#instructions').text('Oops. It looks like player 1 has left the game. Waiting for a new player to join.');
+        $('#choice1').text('');
+        $('#choice2').text('');
+        $('#player1').text('');
+        $('#wins1').text('');
+        $('#losses1').text('');
+        $('#ties1').text('');
+        $('#choice-section').hide();
+      } else{
+        return;
+      }
+    });
+    data.child('players').on('child_added', function(){
+      data.once('value', function(snapshot){
+        var player1Exists = snapshot.child('players').child('1').exists();
+        if(player1Exists && gameObject.userId == '2'){
+          var player1Ref = data.child('players').child('1');
+          player1Ref.once('value', function(snapshot){
+            gameObject.name = snapshot.val().name;
+            gameObject.wins = snapshot.val().wins;
+            gameObject.losses = snapshot.val().losses;
+            gameObject.ties = snapshot.val().ties;
+            $('#instructions').text(gameObject.name + ' has joined the game. Waiting for their choice.');
+            $("#player2").text(name);
+            $("#wins2").text('Wins: ' + gameObject.wins2);
+            $("#losses2").text('Losses: ' + gameObject.losses2);
+            $("#ties2").text('Ties: ' + gameObject.ties2);
+            $("#player1").text(gameObject.name);
+            $("#wins1").text('Wins: ' + gameObject.wins);
+            $("#losses1").text('Losses: ' + gameObject.losses);
+            $("#ties1").text('Ties: ' + gameObject.ties);
+          });
+        }
+      });
+    });
+
+  });
 
   turn.on('value', function(snapshot){
     console.log('TURN CHANGE: ' + snapshot.val());
