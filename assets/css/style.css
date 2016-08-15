@@ -24,3 +24,7 @@ body{
 #play-again{
   display: none;
 }
+#chat-window{
+  background-color: white;
+  height: 200px;
+}
