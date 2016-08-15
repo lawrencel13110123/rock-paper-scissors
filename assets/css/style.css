@@ -28,3 +28,8 @@ body{
   background-color: white;
   height: 200px;
 }
+#chat-row{
+  margin-top: 50px;
+  margin-bottom: 50px;
+  /*display: none;*/
+}
