@@ -26,6 +26,8 @@ $(document).ready(function(){
 		turn: 0,
   };
 
+    data.onDisconnect().update({turn: 0});
+
   turn.on('value', function(snapshot){
     console.log('TURN CHANGE: ' + snapshot.val());
     if(snapshot.val() == 1){
