@@ -64,7 +64,7 @@ $(document).ready(function(){
             gameObject.wins = snapshot.val().wins;
             gameObject.losses = snapshot.val().losses;
             gameObject.ties = snapshot.val().ties;
-            $('#instructions').text(gameObject.name + ' has joined the game. Waiting for their choice.');
+            $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
             $("#player2").text(name);
             $("#wins2").text('Wins: ' + gameObject.wins2);
             $("#losses2").text('Losses: ' + gameObject.losses2);
@@ -322,5 +322,11 @@ $(document).ready(function(){
       $('#choice2').text('');
       $('#instructions').text('Waiting for ' + gameObject.name + ' to make a choice.');
     }
+    data.once('value', function(snapshot){
+      if(snapshot.numChildren != 2){
+        console.log('hit');
+        data.update({turn: 0});
+      }
+    });
   }
 });
