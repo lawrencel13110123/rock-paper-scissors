@@ -65,6 +65,7 @@ $(document).ready(function(){
         $("#wins1").text('Wins: ' + gameObject.wins);
         $("#losses1").text('Losses: ' + gameObject.losses);
         $("#ties1").text('Ties: ' + gameObject.ties);
+        player1Ref.onDisconnect().remove();
       } else if(player1Exists && !player2Exists){
         gameObject.userId = 2;
         console.log('UserId: ' + gameObject.userId);
@@ -89,6 +90,7 @@ $(document).ready(function(){
           $("#wins1").text('Wins: ' + gameObject.wins);
           $("#losses1").text('Losses: ' + gameObject.losses);
           $("#ties1").text('Ties: ' + gameObject.ties);
+          player2Ref.onDisconnect().remove();
         });
         data.update({turn: 1});
       } else{
