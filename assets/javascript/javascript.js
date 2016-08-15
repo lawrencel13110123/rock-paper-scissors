@@ -12,9 +12,6 @@ $(document).ready(function(){
   var turn = data.child('turn');
   var name;
   var gameObject = {
-    time: "",
-		myName: "",
-		message: "",
 		userId: "",
 		name: "",
 		pick: "",
