@@ -112,130 +112,130 @@
   //assigns players and sets them as object in firebase//
   //if no players are present player 1 object is created, if player 1 is present player 2 object is created//
   //if 2 players are present it alerts the user to try again soon//
-  $('#submit-button').on('click', function(){
-    name = $('#name').val().trim();
-    data.once('value', function(snapshot){
-      var player1Exists = snapshot.child('players').child('1').exists();
-      var player2Exists = snapshot.child('players').child('2').exists();
-      var playersRef = data.child('players');
-      var player1Ref = playersRef.child('1');
-      var player2Ref = playersRef.child('2');
-      if(!player1Exists){
-        gameObject.userId = 1;
-        gameObject.name = name;
-        player1Ref.set({
-          name: name,
-          pick: '',
-          wins: 0,
-          losses: 0,
-          ties: 0
-        });
-        $('#instructions').text('Hi ' + name + '. You are player 1. Waiting for player 2 to arrive.');
-        $('#chat-window').append('<p class="text-center">You can chat with your opponent here when they join the game.</p>');
-        $("#player1").text(name);
-        $("#wins1").text('Wins: ' + gameObject.wins);
-        $("#losses1").text('Losses: ' + gameObject.losses);
-        $("#ties1").text('Ties: ' + gameObject.ties);
-        data.once("value", function(snapshot) {
-            var player2Exists = snapshot.child('players').child('2').exists();
-            if (player2Exists) {
-              gameObject.name2 = snapshot.val().players[2].name;
-              $("#player2").text(gameObject.name2);
-              $('#choice1').text('');
-              $('#choice2').text('');
-              $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
-              $('#chat-window').empty();
-              $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
-              $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
-              $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
-              $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
-              $('#choice-section').show();
-              data.update({turn: 1});
-            }
-        });
-        player1Ref.onDisconnect().remove();
-      } else if(player1Exists && !player2Exists){
-        gameObject.name2 = name;
-        gameObject.userId = 2;
-        console.log('UserId: ' + gameObject.userId);
-        player2Ref.set({
-          name: name,
-          pick: '',
-          wins: 0,
-          losses: 0,
-          ties: 0
-        });
-        player1Ref.once('value', function(snapshot){
-          gameObject.name = snapshot.val().name;
-          gameObject.wins = snapshot.val().wins;
-          gameObject.losses = snapshot.val().losses;
-          gameObject.ties = snapshot.val().ties;
-          $('#instructions').text('Hi ' + name + '. You are player 2. Waiting for ' + gameObject.name + ' to make a choice.');
-          $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
-          $("#player2").text(name);
-          $("#wins2").text('Wins: ' + gameObject.wins2);
-          $("#losses2").text('Losses: ' + gameObject.losses2);
-          $("#ties2").text('Ties: ' + gameObject.ties2);
-          $("#player1").text(gameObject.name);
-          $("#wins1").text('Wins: ' + gameObject.wins);
-          $("#losses1").text('Losses: ' + gameObject.losses);
-          $("#ties1").text('Ties: ' + gameObject.ties);
-          player2Ref.onDisconnect().remove();
-        });
-        data.update({turn: 1});
-      } else{
-        alert('Sorry, the game is full. Try again shortly');
-      }
-    });
-    $('#name').val('');
-    return false;
-  });
+  // $('#submit-button').on('click', function(){
+  //   name = $('#name').val().trim();
+  //   data.once('value', function(snapshot){
+  //     var player1Exists = snapshot.child('players').child('1').exists();
+  //     var player2Exists = snapshot.child('players').child('2').exists();
+  //     var playersRef = data.child('players');
+  //     var player1Ref = playersRef.child('1');
+  //     var player2Ref = playersRef.child('2');
+  //     if(!player1Exists){
+  //       gameObject.userId = 1;
+  //       gameObject.name = name;
+  //       player1Ref.set({
+  //         name: name,
+  //         pick: '',
+  //         wins: 0,
+  //         losses: 0,
+  //         ties: 0
+  //       });
+  //       $('#instructions').text('Hi ' + name + '. You are player 1. Waiting for player 2 to arrive.');
+  //       $('#chat-window').append('<p class="text-center">You can chat with your opponent here when they join the game.</p>');
+  //       $("#player1").text(name);
+  //       $("#wins1").text('Wins: ' + gameObject.wins);
+  //       $("#losses1").text('Losses: ' + gameObject.losses);
+  //       $("#ties1").text('Ties: ' + gameObject.ties);
+  //       data.once("value", function(snapshot) {
+  //           var player2Exists = snapshot.child('players').child('2').exists();
+  //           if (player2Exists) {
+  //             gameObject.name2 = snapshot.val().players[2].name;
+  //             $("#player2").text(gameObject.name2);
+  //             $('#choice1').text('');
+  //             $('#choice2').text('');
+  //             $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+  //             $('#chat-window').empty();
+  //             $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
+  //             $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
+  //             $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
+  //             $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
+  //             $('#choice-section').show();
+  //             data.update({turn: 1});
+  //           }
+  //       });
+  //       player1Ref.onDisconnect().remove();
+  //     } else if(player1Exists && !player2Exists){
+  //       gameObject.name2 = name;
+  //       gameObject.userId = 2;
+  //       console.log('UserId: ' + gameObject.userId);
+  //       player2Ref.set({
+  //         name: name,
+  //         pick: '',
+  //         wins: 0,
+  //         losses: 0,
+  //         ties: 0
+  //       });
+  //       player1Ref.once('value', function(snapshot){
+  //         gameObject.name = snapshot.val().name;
+  //         gameObject.wins = snapshot.val().wins;
+  //         gameObject.losses = snapshot.val().losses;
+  //         gameObject.ties = snapshot.val().ties;
+  //         $('#instructions').text('Hi ' + name + '. You are player 2. Waiting for ' + gameObject.name + ' to make a choice.');
+  //         $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
+  //         $("#player2").text(name);
+  //         $("#wins2").text('Wins: ' + gameObject.wins2);
+  //         $("#losses2").text('Losses: ' + gameObject.losses2);
+  //         $("#ties2").text('Ties: ' + gameObject.ties2);
+  //         $("#player1").text(gameObject.name);
+  //         $("#wins1").text('Wins: ' + gameObject.wins);
+  //         $("#losses1").text('Losses: ' + gameObject.losses);
+  //         $("#ties1").text('Ties: ' + gameObject.ties);
+  //         player2Ref.onDisconnect().remove();
+  //       });
+  //       data.update({turn: 1});
+  //     } else{
+  //       alert('Sorry, the game is full. Try again shortly');
+  //     }
+  //   });
+  //   $('#name').val('');
+  //   return false;
+  // });
   //player 1 chooses rock, paper, or scissors and updates player 1 object in firebase//
-  function user1Choose(){
-    if(gameObject.userId == '1' && gameObject.turn == 1){
-      data.once("value", function(snapshot) {
-          var player2Exists = snapshot.child('players').child('2').exists();
-          if (player2Exists) {
-            gameObject.name2 = snapshot.val().players[2].name;
-            $("#player2").text(gameObject.name2);
-            $('#choice1').text('');
-            $('#choice2').text('');
-            $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
-            $('#chat-window').empty();
-            $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
-            $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
-            $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
-            $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
-            $('#choice-section').show();
-          }
-      });
-      var playersRef = data.child('players');
-      var player1Ref = playersRef.child('1');
-      $('.choice').on('click', function(){
-        gameObject.pick = $(this).data('choice');
-        player1Ref.update({pick: $(this).data('choice')});
-        data.update({turn: 2});
-        $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice.');
-        $('#choice-section').hide();
-      });
-    }
-  }
+  // function user1Choose(){
+  //   if(gameObject.userId == '1' && gameObject.turn == 1){
+  //     data.once("value", function(snapshot) {
+  //         var player2Exists = snapshot.child('players').child('2').exists();
+  //         if (player2Exists) {
+  //           gameObject.name2 = snapshot.val().players[2].name;
+  //           $("#player2").text(gameObject.name2);
+  //           $('#choice1').text('');
+  //           $('#choice2').text('');
+  //           $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+  //           $('#chat-window').empty();
+  //           $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
+  //           $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
+  //           $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
+  //           $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
+  //           $('#choice-section').show();
+  //         }
+  //     });
+  //     var playersRef = data.child('players');
+  //     var player1Ref = playersRef.child('1');
+  //     $('.choice').on('click', function(){
+  //       gameObject.pick = $(this).data('choice');
+  //       player1Ref.update({pick: $(this).data('choice')});
+  //       data.update({turn: 2});
+  //       $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice.');
+  //       $('#choice-section').hide();
+  //     });
+  //   }
+  // }
     //player 2 chooses rock, paper, or scissors and updates player 1 object in firebase//
-  function user2Choose(){
-    if(gameObject.userId == '2' && gameObject.turn == 2){
-      console.log('user 2 choose function hit.');
-      var playersRef = data.child('players');
-      var player2Ref = playersRef.child('2');
-      $('#instructions').text('It is your turn.');
-      $('#choice-section').show();
-      $('.choice').on('click', function(){
-        gameObject.pick = $(this).data('choice');
-        player2Ref.update({pick: $(this).data('choice')});
-        data.update({turn: 3});
-        $('#choice-section').hide();
-      });
-    }
-  }
+  // function user2Choose(){
+  //   if(gameObject.userId == '2' && gameObject.turn == 2){
+  //     console.log('user 2 choose function hit.');
+  //     var playersRef = data.child('players');
+  //     var player2Ref = playersRef.child('2');
+  //     $('#instructions').text('It is your turn.');
+  //     $('#choice-section').show();
+  //     $('.choice').on('click', function(){
+  //       gameObject.pick = $(this).data('choice');
+  //       player2Ref.update({pick: $(this).data('choice')});
+  //       data.update({turn: 3});
+  //       $('#choice-section').hide();
+  //     });
+  //   }
+  // }
   //logic to check who the winner is//
   function checkWinner(){
     if(gameObject.turn == 3){
