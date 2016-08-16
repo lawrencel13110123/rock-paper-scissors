@@ -329,4 +329,13 @@ $(document).ready(function(){
       }
     });
   }
+
+  $('#send-button').on('click', function(){
+    console.log('hit');
+    var chat = $('#chat').val();
+    console.log(chat);
+    var p = $('<p>');
+    p.text(chat);
+    $('#chat-window').append(p);
+  });
 });

@@ -27,9 +27,11 @@ body{
 #chat-window{
   background-color: white;
   height: 200px;
+  overflow: auto;
+  color: black;
 }
 #chat-row{
   margin-top: 50px;
   margin-bottom: 50px;
-  display: none;
+  /*display: none;*/
 }
