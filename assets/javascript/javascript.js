@@ -46,6 +46,8 @@ $(document).ready(function(){
         $('#choice-section').hide();
       } else if (player2Exists && !player1Exists){
         $('#instructions').text('Oops. It looks like player 1 has left the game. Waiting for a new player to join.');
+        $('#chat-window').empty();
+        $('#chat-window').append('<p>Player 1 has disconnected.');
         $('#choice1').text('');
         $('#choice2').text('');
         $('#player1').text('');
@@ -68,6 +70,7 @@ $(document).ready(function(){
             gameObject.losses = snapshot.val().losses;
             gameObject.ties = snapshot.val().ties;
             $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
+            $('#chat-window').empty();
             $("#player2").text(name);
             $("#wins2").text('Wins: ' + gameObject.wins2);
             $("#losses2").text('Losses: ' + gameObject.losses2);
@@ -118,6 +121,7 @@ $(document).ready(function(){
           ties: 0
         });
         $('#instructions').text('Hi ' + name + '. You are player 1. Waiting for player 2 to arrive.');
+        $('#chat-window').append('<p class="text-center">You can chat with your opponent here when they join the game.</p>');
         $("#player1").text(name);
         $("#wins1").text('Wins: ' + gameObject.wins);
         $("#losses1").text('Losses: ' + gameObject.losses);
@@ -130,6 +134,7 @@ $(document).ready(function(){
               $('#choice1').text('');
               $('#choice2').text('');
               $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+              $('#chat-window').empty();
               $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
               $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
               $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
@@ -183,6 +188,7 @@ $(document).ready(function(){
             $('#choice1').text('');
             $('#choice2').text('');
             $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+            $('#chat-window').empty();
             $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
             $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
             $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
@@ -335,13 +341,19 @@ $(document).ready(function(){
   }
 
   $('#send-button').on('click', function(){
-    var chat = $('#chat').val();
-    if(gameObject.userId == '1'){
-      data.child('chat').push({message: gameObject.name + ': ' + chat});
-    } else if(gameObject.userId == '2'){
-      data.child('chat').push({message: gameObject.name2 + ': ' + chat});
-    }
-    $('#chat').val('');
+    data.once('value', function(snapshot){
+      var player1Exists = snapshot.child('players').child('1').exists();
+      var player2Exists = snapshot.child('players').child('2').exists();
+      if(player1Exists && player2Exists){
+        var chat = $('#chat').val();
+        if(gameObject.userId == '1'){
+          data.child('chat').push({message: gameObject.name + ': ' + chat});
+        } else if(gameObject.userId == '2'){
+          data.child('chat').push({message: gameObject.name2 + ': ' + chat});
+        }
+        $('#chat').val('');
+      }
+    });
   });
 
   data.child('chat').on("value", function(snapshot) {
