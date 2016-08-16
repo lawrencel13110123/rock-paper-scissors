@@ -375,6 +375,6 @@ $(document).ready(function(){
               $("#ties1").text('Ties: ' + gameObject.ties);
             });
           }
-      // });
+      });
     });
 });
