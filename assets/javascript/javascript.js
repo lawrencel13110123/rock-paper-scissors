@@ -1,38 +1,38 @@
-$(document).ready(function(){
-  //firebase config and initialization//
-  var config = {
-    apiKey: "AIzaSyAaMZAJo1Ua3PC8RAbRV9yFluO0zUrbg18",
-    authDomain: "rock-paper-scissors-50d2e.firebaseapp.com",
-    databaseURL: "https://rock-paper-scissors-50d2e.firebaseio.com",
-    storageBucket: "rock-paper-scissors-50d2e.appspot.com",
-  };
-
-  firebase.initializeApp(config);
-  //firebase references//
-  var database = firebase.database();
-  var data = database.ref('data');
-  var turn = data.child('turn');
-  //global variables//
-  var name;
-  var gameObject = {
-		userId: "",
-		name: "",
-		pick: "",
-		wins: 0,
-		losses: 0,
-		ties: 0,
-		name2: "",
-		pick2: "",
-		wins2: 0,
-		losses2: 0,
-		ties2: 0,
-		turn: 0,
-  };
-
-  //sets the turn to 0 if a player disconnects//
-  data.onDisconnect().update({turn: 0});
-  //resets the chat if a player disconnects//
-  data.child('chat').onDisconnect().set({});
+// $(document).ready(function(){
+//   //firebase config and initialization//
+//   var config = {
+//     apiKey: "AIzaSyAaMZAJo1Ua3PC8RAbRV9yFluO0zUrbg18",
+//     authDomain: "rock-paper-scissors-50d2e.firebaseapp.com",
+//     databaseURL: "https://rock-paper-scissors-50d2e.firebaseio.com",
+//     storageBucket: "rock-paper-scissors-50d2e.appspot.com",
+//   };
+//
+//   firebase.initializeApp(config);
+//   //firebase references//
+//   var database = firebase.database();
+//   var data = database.ref('data');
+//   var turn = data.child('turn');
+//   //global variables//
+//   var name;
+//   var gameObject = {
+// 		userId: "",
+// 		name: "",
+// 		pick: "",
+// 		wins: 0,
+// 		losses: 0,
+// 		ties: 0,
+// 		name2: "",
+// 		pick2: "",
+// 		wins2: 0,
+// 		losses2: 0,
+// 		ties2: 0,
+// 		turn: 0,
+//   };
+//
+//   //sets the turn to 0 if a player disconnects//
+//   data.onDisconnect().update({turn: 0});
+//   //resets the chat if a player disconnects//
+//   data.child('chat').onDisconnect().set({});
   //if a player disconnects it notifies the remaining player and changes the DOM//
   data.child('players').on('child_removed', function(){
     data.once('value', function(snapshot){
@@ -95,20 +95,20 @@ $(document).ready(function(){
   });
   //keeps the gameObject.turn up to date with firebase by monitoring all value changes//
   //runs the funtion necessary at each turn//
-  turn.on('value', function(snapshot){
-    if(snapshot.val() == 1){
-      gameObject.turn = 1;
-      user1Choose();
-    } else if (snapshot.val() == 2){
-      gameObject.turn = 2;
-      user2Choose();
-    } else if(snapshot.val() == 3){
-      gameObject.turn = 3;
-      checkWinner();
-    } else if(snapshot.val() == 0){
-      gameObject.turn = 0;
-    }
-  });
+  // turn.on('value', function(snapshot){
+  //   if(snapshot.val() == 1){
+  //     gameObject.turn = 1;
+  //     user1Choose();
+  //   } else if (snapshot.val() == 2){
+  //     gameObject.turn = 2;
+  //     user2Choose();
+  //   } else if(snapshot.val() == 3){
+  //     gameObject.turn = 3;
+  //     checkWinner();
+  //   } else if(snapshot.val() == 0){
+  //     gameObject.turn = 0;
+  //   }
+  // });
   //assigns players and sets them as object in firebase//
   //if no players are present player 1 object is created, if player 1 is present player 2 object is created//
   //if 2 players are present it alerts the user to try again soon//
