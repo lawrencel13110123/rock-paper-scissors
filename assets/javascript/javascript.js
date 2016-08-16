@@ -191,35 +191,35 @@
   //   return false;
   // });
   // //player 1 chooses rock, paper, or scissors and updates player 1 object in firebase//
-  // function user1Choose(){
-  //   if(gameObject.userId == '1' && gameObject.turn == 1){
-  //     data.once("value", function(snapshot) {
-  //         var player2Exists = snapshot.child('players').child('2').exists();
-  //         if (player2Exists) {
-  //           gameObject.name2 = snapshot.val().players[2].name;
-  //           $("#player2").text(gameObject.name2);
-  //           $('#choice1').text('');
-  //           $('#choice2').text('');
-  //           $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
-  //           $('#chat-window').empty();
-  //           $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
-  //           $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
-  //           $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
-  //           $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
-  //           $('#choice-section').show();
-  //         }
-  //     });
-  //     var playersRef = data.child('players');
-  //     var player1Ref = playersRef.child('1');
-  //     $('.choice').on('click', function(){
-  //       gameObject.pick = $(this).data('choice');
-  //       player1Ref.update({pick: $(this).data('choice')});
-  //       data.update({turn: 2});
-  //       $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice.');
-  //       $('#choice-section').hide();
-  //     });
-  //   }
-  // }
+  function user1Choose(){
+    if(gameObject.userId == '1' && gameObject.turn == 1){
+      data.once("value", function(snapshot) {
+          var player2Exists = snapshot.child('players').child('2').exists();
+          if (player2Exists) {
+            gameObject.name2 = snapshot.val().players[2].name;
+            $("#player2").text(gameObject.name2);
+            $('#choice1').text('');
+            $('#choice2').text('');
+            $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
+            $('#chat-window').empty();
+            $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
+            $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
+            $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
+            $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
+            $('#choice-section').show();
+          }
+      });
+      var playersRef = data.child('players');
+      var player1Ref = playersRef.child('1');
+      $('.choice').on('click', function(){
+        gameObject.pick = $(this).data('choice');
+        player1Ref.update({pick: $(this).data('choice')});
+        data.update({turn: 2});
+        $('#instructions').text('You chose ' + gameObject.pick + '. Waiting for player 2 to make their choice.');
+        $('#choice-section').hide();
+      });
+    }
+  }
   //   // player 2 chooses rock, paper, or scissors and updates player 1 object in firebase//
   // function user2Choose(){
   //   if(gameObject.userId == '2' && gameObject.turn == 2){
