@@ -320,5 +320,61 @@ $(document).ready(function(){
         return;
       }
     }
+    //updates the chat-window each time a new chat child is pushed to firebase//
+    data.child('chat').on("value", function(snapshot) {
+      $('#chat-window').empty();
+      snapshot.forEach(function(childSnap) {
+        if(gameObject.userId == '1' || gameObject.userId == '2'){
+          var p = $('<p>')
+          p.text(childSnap.val().message);
+          $('#chat-window').append(p);
+        }
+      });
+    });
 
+    //monitors the playersRef in firebase and changes the DOM if a child (a player) is removed//
+    playersRef.on('child_removed', function(){
+      //if player 1 exists and not player 2 change the DOM of player 1//
+      if(player1Exists && !player2Exists){
+        $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
+        $('#chat-window').empty();
+        $('#chat-window').append('<p>Player 2 has disconnected.');
+        $('#player2').text('');
+        $('#wins2').text('');
+        $('#losses2').text('');
+        $('#ties2').text('');
+        $('#choice-section').hide();
+        //if player 2 exists and not player 1 change the DOM of player 2//
+      } else if (player2Exists && !player1Exists){
+        $('#instructions').text('Oops. It looks like player 1 has left the game. Waiting for a new player to join.');
+        $('#chat-window').empty();
+        $('#chat-window').append('<p>Player 1 has disconnected.');
+        $('#player1').text('');
+        $('#wins1').text('');
+        $('#losses1').text('');
+        $('#ties1').text('');
+        $('#choice-section').hide();
+      } else{
+        return;
+      }
+      //if player 1 disconnects this will change the DOM for player 2 when a NEW player 1 is added//
+      //this assumes player 1 disconnects and player 2 stays and waits for a new person to join as player 1//
+      playersRef.on('child_added', function(){
+          if(player1Exists && gameObject.userId == '2'){
+            player1Ref.once('value', function(snapshot){
+              gameObject.name = snapshot.val().name;
+              gameObject.wins = snapshot.val().wins;
+              gameObject.losses = snapshot.val().losses;
+              gameObject.ties = snapshot.val().ties;
+              $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
+              $('#chat-window').empty();
+              $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
+              $("#player1").text(gameObject.name);
+              $("#wins1").text('Wins: ' + gameObject.wins);
+              $("#losses1").text('Losses: ' + gameObject.losses);
+              $("#ties1").text('Ties: ' + gameObject.ties);
+            });
+          }
+      });
+    });
 });
