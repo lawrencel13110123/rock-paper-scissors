@@ -106,7 +106,7 @@ $(document).ready(function(){
       var player2Ref = playersRef.child('2');
       if(!player1Exists){
         gameObject.userId = 1;
-        console.log('UserId: ' + gameObject.userId);
+        gameObject.name = name;
         player1Ref.set({
           name: name,
           pick: '',
@@ -136,6 +136,7 @@ $(document).ready(function(){
         });
         player1Ref.onDisconnect().remove();
       } else if(player1Exists && !player2Exists){
+        gameObject.name2 = name;
         gameObject.userId = 2;
         console.log('UserId: ' + gameObject.userId);
         player2Ref.set({
@@ -331,11 +332,8 @@ $(document).ready(function(){
   }
 
   $('#send-button').on('click', function(){
-    console.log('hit');
     var chat = $('#chat').val();
-    console.log(chat);
-    var p = $('<p>');
-    p.text(chat);
-    $('#chat-window').append(p);
+    data.child('chat').push({message: gameObject.name + ': ' + chat});
+    $('#chat').val('');
   });
 });
