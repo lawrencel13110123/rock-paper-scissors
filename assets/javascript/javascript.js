@@ -27,6 +27,7 @@ $(document).ready(function(){
   };
 
   data.onDisconnect().update({turn: 0});
+  data.child('chat').onDisconnect().set({});
 
   data.child('players').on('child_removed', function(){
     data.once('value', function(snapshot){
@@ -34,6 +35,8 @@ $(document).ready(function(){
       var player2Exists = snapshot.child('players').child('2').exists();
       if(player1Exists && !player2Exists){
         $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
+        $('#chat-window').empty();
+        $('#chat-window').append('<p>Player 2 has disconnected.');
         $('#choice1').text('');
         $('#choice2').text('');
         $('#player2').text('');
@@ -333,7 +336,22 @@ $(document).ready(function(){
 
   $('#send-button').on('click', function(){
     var chat = $('#chat').val();
-    data.child('chat').push({message: gameObject.name + ': ' + chat});
+    if(gameObject.userId == '1'){
+      data.child('chat').push({message: gameObject.name + ': ' + chat});
+    } else if(gameObject.userId == '2'){
+      data.child('chat').push({message: gameObject.name2 + ': ' + chat});
+    }
     $('#chat').val('');
+  });
+
+  data.child('chat').on("value", function(snapshot) {
+    $('#chat-window').empty();
+    snapshot.forEach(function(childSnap) {
+      if(gameObject.userId == '1' || gameObject.userId == '2'){
+        var p = $('<p>')
+        p.text(childSnap.val().message);
+        $('#chat-window').append(p);
+      }
+    });
   });
 });
