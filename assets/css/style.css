@@ -11,15 +11,13 @@ body{
 }
 #choice-section{
   margin-top: 20px;
+  display: none;
 }
 .choice{
   display: inline-block;
-  border: 1px solid black;
+  border: 2px solid black;
   margin: 5px;
   color: black;
-}
-#choice-section{
-  display: none;
 }
 #play-again{
   display: none;
@@ -29,9 +27,13 @@ body{
   height: 200px;
   overflow: auto;
   color: black;
+  padding: 10px;
 }
 #chat-row{
   margin-top: 50px;
   margin-bottom: 50px;
   /*display: none;*/
+}
+#input{
+  margin-top: 5px;
 }
