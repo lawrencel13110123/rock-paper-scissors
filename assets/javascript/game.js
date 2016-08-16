@@ -36,28 +36,31 @@ $(document).ready(function(){
   data.onDisconnect().update({turn: 0});
   //resets the chat if a player disconnects//
   data.child('chat').onDisconnect().set({});
-  //keeps global variables in sync with firebase on changes to firebase//
-  data.on('value', function(snapshot){
   //removes player 1 and player 2 from the database on disconnect//
   player1Ref.onDisconnect().remove();
   player2Ref.onDisconnect().remove();
+  //keeps global variables in sync with firebase on changes to firebase//
+  data.on('value', function(snapshot){
   //sets player1Exists and player2Exists to true or false depending on if they exist in the database//
   player1Exists = snapshot.child('players').child('1').exists();
   player2Exists = snapshot.child('players').child('2').exists();
-  //keeps the gameObject.turn variable in sync with firebase//
-  if(snapshot.val().turn == 1){
-    gameObject.turn = 1;
-    user1Choose();
-  } else if (snapshot.val().turn == 2){
-    gameObject.turn = 2;
-    user2Choose();
-  } else if(snapshot.val().turn == 3){
-    gameObject.turn = 3;
-    checkWinner();
-  } else if(snapshot.val().turn == 0){
-    gameObject.turn = 0;
-  }
   });
+  //keeps the gameObject.turn variable in sync with firebase//
+  turn.on('value', function(snapshot){
+    if(snapshot.val() == 1){
+      gameObject.turn = 1;
+      user1Choose();
+    } else if (snapshot.val() == 2){
+      gameObject.turn = 2;
+      user2Choose();
+    } else if(snapshot.val() == 3){
+      gameObject.turn = 3;
+      checkWinner();
+    } else if(snapshot.val() == 0){
+      gameObject.turn = 0;
+    }
+  });
+
   //on click function for when a user submits name//
   $('#submit-button').on('click', function(){
     name = $('#name').val();
@@ -175,5 +178,147 @@ $(document).ready(function(){
     }
   }
 
+  function checkWinner(){
+    console.log('check winner hit');
+    //ensure it is turn 3//
+    if(gameObject.turn == 3){
+      // player 2 changes the turn to 0 so the function only runs once//
+      // Only user 1 does this because if both users do it would mess up the order//
+      if(gameObject.userId == '1'){
+        data.update({turn: 0});
+      }
+      playersRef.once('value', function(snapshot){
+        var p1 = snapshot.child('1').val().pick;
+        var p2 = snapshot.child('2').val().pick;
+        if (p1 == p2) {
+          $('#instructions').text('It\'s a tie!');
+          gameObject.ties++;
+          player1Ref.update({
+            ties: gameObject.ties
+          });
+          gameObject.ties2++;
+          player2Ref.update({
+            ties: gameObject.ties2
+          });
+        } else if(p1 == 'rock'){
+            if(p2 == 'scissors'){
+              $('#instructions').text(gameObject.name + ' wins!');
+              gameObject.wins++;
+              player1Ref.update({
+                wins: gameObject.wins
+              });
+              gameObject.losses2++;
+              player2Ref.update({
+                losses: gameObject.losses2
+              });
+          } else{
+            $('#instructions').text(gameObject.name2 + ' wins!');
+            gameObject.losses++;
+            player1Ref.update({
+              losses: gameObject.losses
+            });
+            gameObject.wins2++;
+            player2Ref.update({
+              wins: gameObject.wins2
+            });
+          }
+        } else if(p1 == 'paper'){
+          if(p2 == 'rock'){
+            $('#instructions').text(gameObject.name + ' wins!');
+            gameObject.wins++;
+            player1Ref.update({
+              wins: gameObject.wins
+            });
+            gameObject.losses2++;
+            player2Ref.update({
+              losses: gameObject.losses2
+            });
+          } else{
+            $('#instructions').text(gameObject.name2 + ' wins!');
+            gameObject.losses++;
+            player1Ref.update({
+              losses: gameObject.losses
+            });
+            gameObject.wins2++;
+            player2Ref.update({
+              wins: gameObject.wins2
+            });
+          }
+        } else if(p1 == 'scissors'){
+          if(p2 == 'paper'){
+            $('#instructions').text(gameObject.name + ' wins!');
+            gameObject.wins++;
+            player1Ref.update({
+              wins: gameObject.wins
+            });
+            gameObject.losses2++;
+            player2Ref.update({
+              losses: gameObject.losses2
+            });
+          } else{
+            $('#instructions').text(gameObject.name2 + ' wins!');
+            gameObject.losses++;
+            player1Ref.update({
+              losses: gameObject.losses
+            });
+            gameObject.wins2++;
+            player2Ref.update({
+              wins: gameObject.wins2
+            });
+            }
+        }
+        //changes the DOM for both players//
+        $('#choice1').text(gameObject.name + ' chose ' + p1 + '.');
+        $('#choice2').text(gameObject.name2 + ' chose ' + p2 + '.');
+        $("#wins1").text('Wins: ' + gameObject.wins);
+        $("#losses1").text('Losses: ' + gameObject.losses);
+        $("#ties1").text('Ties: ' + gameObject.ties);
+        $("#wins2").text('Wins: ' + gameObject.wins2);
+        $("#losses2").text('Losses: ' + gameObject.losses2);
+        $("#ties2").text('Ties: ' + gameObject.ties2);
+      });
+    }
+    //show the results for 3 seconds and then run the reset function//
+    setTimeout(reset, 3000);
+  }
+  //reset function to change the DOM and change the turn to 1 so player 1 is prompted to choose again//
+  function reset(){
+    data.update({turn: 1});
+    //changes the DOM for BOTH players//
+    $('#choice1').text('');
+    $('#choice2').text('');
+    //changes the DOM for player 2, player 1's DOM is changed by the user1Choose function which is called since the turn is set back to 1//
+    if(gameObject.userId == '2'){
+      $('#choice1').text('');
+      $('#choice2').text('');
+      $('#instructions').text('Waiting for ' + gameObject.name + ' to make a choice.');
+    }
+    //ensures the neither player disconnects during the timeout, if one does the turn is set to 0 until a new player is added so that the user1Choose function is NOT called//
+    data.once('value', function(snapshot){
+      if(snapshot.numChildren != 2){
+        data.update({turn: 0});
+      }
+    });
+  }
+
+    //on click for the chat submit button that runs sendChat function//
+    $('#submit-button').on('click', function(){
+      var chat = $('#chat').val();
+      sendChat(chat);
+      $('#chat').val('');
+    })
+
+    //function to send chat to firebase, only works if two users are present//
+    function sendChat(chat){
+      if(player1Exists && player2Exists){
+        if(gameObject.userId == '1'){
+          data.child('chat').push({message: gameObject.name + ': ' + chat});
+        } else if(gameObject.userId == '2'){
+          data.child('chat').push({message: gameObject.name2 + ': ' + chat});
+        }
+      } else{
+        return;
+      }
+    }
 
 });

@@ -28,10 +28,10 @@
 // 		ties2: 0,
 // 		turn: 0,
 //   };
-//
-//   //sets the turn to 0 if a player disconnects//
+// //
+// //   //sets the turn to 0 if a player disconnects//
 //   data.onDisconnect().update({turn: 0});
-//   //resets the chat if a player disconnects//
+// //   //resets the chat if a player disconnects//
 //   data.child('chat').onDisconnect().set({});
   //if a player disconnects it notifies the remaining player and changes the DOM//
   data.child('players').on('child_removed', function(){
@@ -190,7 +190,7 @@
   //   $('#name').val('');
   //   return false;
   // });
-  //player 1 chooses rock, paper, or scissors and updates player 1 object in firebase//
+  // //player 1 chooses rock, paper, or scissors and updates player 1 object in firebase//
   // function user1Choose(){
   //   if(gameObject.userId == '1' && gameObject.turn == 1){
   //     data.once("value", function(snapshot) {
@@ -220,7 +220,7 @@
   //     });
   //   }
   // }
-    //player 2 chooses rock, paper, or scissors and updates player 1 object in firebase//
+  //   // player 2 chooses rock, paper, or scissors and updates player 1 object in firebase//
   // function user2Choose(){
   //   if(gameObject.userId == '2' && gameObject.turn == 2){
   //     console.log('user 2 choose function hit.');
@@ -236,141 +236,141 @@
   //     });
   //   }
   // }
-  //logic to check who the winner is//
-  function checkWinner(){
-    if(gameObject.turn == 3){
-      if(gameObject.userId == '1'){
-        data.update({turn: 0});
-      }
-      data.once('value', function(snapshot){
-        var player1Ref = data.child('players').child('1');
-        var player2Ref = data.child('players').child('2');
-        var p1 = snapshot.val().players[1].pick;
-        var p2 = snapshot.val().players[2].pick;
-        gameObject.name = snapshot.val().players[1].name;
-        gameObject.name2 = snapshot.val().players[2].name;
-        if (p1 == p2) {
-          $('#instructions').text('It\'s a tie!');
-          gameObject.ties++;
-          player1Ref.update({
-            ties: gameObject.ties
-          });
-          gameObject.ties2++;
-          player2Ref.update({
-            ties: gameObject.ties2
-          });
-        } else if(p1 == 'rock'){
-            if(p2 == 'scissors'){
-              $('#instructions').text(gameObject.name + ' wins!');
-              gameObject.wins++;
-              player1Ref.update({
-                wins: gameObject.wins
-              });
-              gameObject.losses2++;
-              player2Ref.update({
-                losses: gameObject.losses2
-              });
-          } else{
-            $('#instructions').text(gameObject.name2 + ' wins!');
-            gameObject.losses++;
-            player1Ref.update({
-              losses: gameObject.losses
-            });
-            gameObject.wins2++;
-            player2Ref.update({
-              wins: gameObject.wins2
-            });
-          }
-        } else if(p1 == 'paper'){
-          if(p2 == 'rock'){
-            $('#instructions').text(gameObject.name + ' wins!');
-            gameObject.wins++;
-            player1Ref.update({
-              wins: gameObject.wins
-            });
-            gameObject.losses2++;
-            player2Ref.update({
-              losses: gameObject.losses2
-            });
-          } else{
-            $('#instructions').text(gameObject.name2 + ' wins!');
-            gameObject.losses++;
-            player1Ref.update({
-              losses: gameObject.losses
-            });
-            gameObject.wins2++;
-            player2Ref.update({
-              wins: gameObject.wins2
-            });
-          }
-        } else if(p1 == 'scissors'){
-          if(p2 == 'paper'){
-            $('#instructions').text(gameObject.name + ' wins!');
-            gameObject.wins++;
-            player1Ref.update({
-              wins: gameObject.wins
-            });
-            gameObject.losses2++;
-            player2Ref.update({
-              losses: gameObject.losses2
-            });
-          } else{
-            $('#instructions').text(gameObject.name2 + ' wins!');
-            gameObject.losses++;
-            player1Ref.update({
-              losses: gameObject.losses
-            });
-            gameObject.wins2++;
-            player2Ref.update({
-              wins: gameObject.wins2
-            });
-            }
-        }
-        $('#choice1').text(snapshot.val().players[1].name + ' chose ' + p1 + '.');
-        $('#choice2').text(snapshot.val().players[2].name + ' chose ' + p2 + '.');
-        $("#wins1").text('Wins: ' + gameObject.wins);
-        $("#losses1").text('Losses: ' + gameObject.losses);
-        $("#ties1").text('Ties: ' + gameObject.ties);
-        $("#wins2").text('Wins: ' + gameObject.wins2);
-        $("#losses2").text('Losses: ' + gameObject.losses2);
-        $("#ties2").text('Ties: ' + gameObject.ties2);
-      });
-    }
-    setTimeout(reset, 2000);
-  }
-  //resets the turn to 1 and player 1 picks again//
-  function reset(){
-    data.update({turn: 1});
-    if(gameObject.userId == '2'){
-      $('#choice1').text('');
-      $('#choice2').text('');
-      $('#instructions').text('Waiting for ' + gameObject.name + ' to make a choice.');
-    }
-    //ensures the neither player disconnects during the timeout, if one does the turn is set to 0 until a new player is added//
-    data.once('value', function(snapshot){
-      if(snapshot.numChildren != 2){
-        data.update({turn: 0});
-      }
-    });
-  }
+  // //logic to check who the winner is//
+  // function checkWinner(){
+  //   if(gameObject.turn == 3){
+  //     if(gameObject.userId == '1'){
+  //       data.update({turn: 0});
+  //     }
+  //     data.once('value', function(snapshot){
+  //       var player1Ref = data.child('players').child('1');
+  //       var player2Ref = data.child('players').child('2');
+  //       var p1 = snapshot.val().players[1].pick;
+  //       var p2 = snapshot.val().players[2].pick;
+  //       gameObject.name = snapshot.val().players[1].name;
+  //       gameObject.name2 = snapshot.val().players[2].name;
+  //       if (p1 == p2) {
+  //         $('#instructions').text('It\'s a tie!');
+  //         gameObject.ties++;
+  //         player1Ref.update({
+  //           ties: gameObject.ties
+  //         });
+  //         gameObject.ties2++;
+  //         player2Ref.update({
+  //           ties: gameObject.ties2
+  //         });
+  //       } else if(p1 == 'rock'){
+  //           if(p2 == 'scissors'){
+  //             $('#instructions').text(gameObject.name + ' wins!');
+  //             gameObject.wins++;
+  //             player1Ref.update({
+  //               wins: gameObject.wins
+  //             });
+  //             gameObject.losses2++;
+  //             player2Ref.update({
+  //               losses: gameObject.losses2
+  //             });
+  //         } else{
+  //           $('#instructions').text(gameObject.name2 + ' wins!');
+  //           gameObject.losses++;
+  //           player1Ref.update({
+  //             losses: gameObject.losses
+  //           });
+  //           gameObject.wins2++;
+  //           player2Ref.update({
+  //             wins: gameObject.wins2
+  //           });
+  //         }
+  //       } else if(p1 == 'paper'){
+  //         if(p2 == 'rock'){
+  //           $('#instructions').text(gameObject.name + ' wins!');
+  //           gameObject.wins++;
+  //           player1Ref.update({
+  //             wins: gameObject.wins
+  //           });
+  //           gameObject.losses2++;
+  //           player2Ref.update({
+  //             losses: gameObject.losses2
+  //           });
+  //         } else{
+  //           $('#instructions').text(gameObject.name2 + ' wins!');
+  //           gameObject.losses++;
+  //           player1Ref.update({
+  //             losses: gameObject.losses
+  //           });
+  //           gameObject.wins2++;
+  //           player2Ref.update({
+  //             wins: gameObject.wins2
+  //           });
+  //         }
+  //       } else if(p1 == 'scissors'){
+  //         if(p2 == 'paper'){
+  //           $('#instructions').text(gameObject.name + ' wins!');
+  //           gameObject.wins++;
+  //           player1Ref.update({
+  //             wins: gameObject.wins
+  //           });
+  //           gameObject.losses2++;
+  //           player2Ref.update({
+  //             losses: gameObject.losses2
+  //           });
+  //         } else{
+  //           $('#instructions').text(gameObject.name2 + ' wins!');
+  //           gameObject.losses++;
+  //           player1Ref.update({
+  //             losses: gameObject.losses
+  //           });
+  //           gameObject.wins2++;
+  //           player2Ref.update({
+  //             wins: gameObject.wins2
+  //           });
+  //           }
+  //       }
+  //       $('#choice1').text(snapshot.val().players[1].name + ' chose ' + p1 + '.');
+  //       $('#choice2').text(snapshot.val().players[2].name + ' chose ' + p2 + '.');
+  //       $("#wins1").text('Wins: ' + gameObject.wins);
+  //       $("#losses1").text('Losses: ' + gameObject.losses);
+  //       $("#ties1").text('Ties: ' + gameObject.ties);
+  //       $("#wins2").text('Wins: ' + gameObject.wins2);
+  //       $("#losses2").text('Losses: ' + gameObject.losses2);
+  //       $("#ties2").text('Ties: ' + gameObject.ties2);
+  //     });
+  //   }
+  //   setTimeout(reset, 2000);
+  // }
+  // // resets the turn to 1 and player 1 picks again//
+  // function reset(){
+  //   data.update({turn: 1});
+  //   if(gameObject.userId == '2'){
+  //     $('#choice1').text('');
+  //     $('#choice2').text('');
+  //     $('#instructions').text('Waiting for ' + gameObject.name + ' to make a choice.');
+  //   }
+  //   //ensures the neither player disconnects during the timeout, if one does the turn is set to 0 until a new player is added//
+  //   data.once('value', function(snapshot){
+  //     if(snapshot.numChildren != 2){
+  //       data.update({turn: 0});
+  //     }
+  //   });
+  // }
   //chat functionality only works if two players are present//
-  $('#send-button').on('click', function(){
-    data.once('value', function(snapshot){
-      var player1Exists = snapshot.child('players').child('1').exists();
-      var player2Exists = snapshot.child('players').child('2').exists();
-      if(player1Exists && player2Exists){
-        var chat = $('#chat').val();
-        if(gameObject.userId == '1'){
-          data.child('chat').push({message: gameObject.name + ': ' + chat});
-        } else if(gameObject.userId == '2'){
-          data.child('chat').push({message: gameObject.name2 + ': ' + chat});
-        }
-        $('#chat').val('');
-      } else{
-        $('#chat').val('');
-      }
-    });
-  });
+  // $('#send-button').on('click', function(){
+  //   data.once('value', function(snapshot){
+  //     var player1Exists = snapshot.child('players').child('1').exists();
+  //     var player2Exists = snapshot.child('players').child('2').exists();
+  //     if(player1Exists && player2Exists){
+  //       var chat = $('#chat').val();
+  //       if(gameObject.userId == '1'){
+  //         data.child('chat').push({message: gameObject.name + ': ' + chat});
+  //       } else if(gameObject.userId == '2'){
+  //         data.child('chat').push({message: gameObject.name2 + ': ' + chat});
+  //       }
+  //       $('#chat').val('');
+  //     } else{
+  //       $('#chat').val('');
+  //     }
+  //   });
+  // });
   //updates the chat-window each time a new chat child is pushed to firebase//
   data.child('chat').on("value", function(snapshot) {
     $('#chat-window').empty();
