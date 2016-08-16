@@ -302,7 +302,7 @@ $(document).ready(function(){
   }
 
     //on click for the chat submit button that runs sendChat function//
-    $('#submit-button').on('click', function(){
+    $('#send-button').on('click', function(){
       var chat = $('#chat').val();
       sendChat(chat);
       $('#chat').val('');
@@ -375,6 +375,6 @@ $(document).ready(function(){
               $("#ties1").text('Ties: ' + gameObject.ties);
             });
           }
-      });
+      // });
     });
 });
