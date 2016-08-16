@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  //firebase config and initialization//
   var config = {
     apiKey: "AIzaSyAaMZAJo1Ua3PC8RAbRV9yFluO0zUrbg18",
     authDomain: "rock-paper-scissors-50d2e.firebaseapp.com",
@@ -7,9 +8,11 @@ $(document).ready(function(){
   };
 
   firebase.initializeApp(config);
+  //firebase references//
   var database = firebase.database();
   var data = database.ref('data');
   var turn = data.child('turn');
+  //global variables//
   var name;
   var gameObject = {
 		userId: "",
@@ -26,9 +29,11 @@ $(document).ready(function(){
 		turn: 0,
   };
 
+  //sets the turn to 0 if a player disconnects//
   data.onDisconnect().update({turn: 0});
+  //resets the chat if a player disconnects//
   data.child('chat').onDisconnect().set({});
-
+  //if a player disconnects it notifies the remaining player and changes the DOM//
   data.child('players').on('child_removed', function(){
     data.once('value', function(snapshot){
       var player1Exists = snapshot.child('players').child('1').exists();
@@ -59,6 +64,8 @@ $(document).ready(function(){
         return;
       }
     });
+    //if player 1 disconnects this will change the DOM for player 2 when a NEW player 1 is added//
+    //this assumes player 1 disconnects and player 2 stays and waits for a new person to join as player 1//
     data.child('players').on('child_added', function(){
       data.once('value', function(snapshot){
         var player1Exists = snapshot.child('players').child('1').exists();
@@ -86,9 +93,9 @@ $(document).ready(function(){
     });
 
   });
-
+  //keeps the gameObject.turn up to date with firebase by monitoring all value changes//
+  //runs the funtion necessary at each turn//
   turn.on('value', function(snapshot){
-    console.log('TURN CHANGE: ' + snapshot.val());
     if(snapshot.val() == 1){
       gameObject.turn = 1;
       user1Choose();
@@ -102,7 +109,9 @@ $(document).ready(function(){
       gameObject.turn = 0;
     }
   });
-
+  //assigns players and sets them as object in firebase//
+  //if no players are present player 1 object is created, if player 1 is present player 2 object is created//
+  //if 2 players are present it alerts the user to try again soon//
   $('#submit-button').on('click', function(){
     name = $('#name').val().trim();
     data.once('value', function(snapshot){
@@ -181,6 +190,7 @@ $(document).ready(function(){
     $('#name').val('');
     return false;
   });
+  //player 1 chooses rock, paper, or scissors and updates player 1 object in firebase//
   function user1Choose(){
     if(gameObject.userId == '1' && gameObject.turn == 1){
       data.once("value", function(snapshot) {
@@ -210,7 +220,7 @@ $(document).ready(function(){
       });
     }
   }
-
+    //player 2 chooses rock, paper, or scissors and updates player 1 object in firebase//
   function user2Choose(){
     if(gameObject.userId == '2' && gameObject.turn == 2){
       console.log('user 2 choose function hit.');
@@ -226,7 +236,7 @@ $(document).ready(function(){
       });
     }
   }
-
+  //logic to check who the winner is//
   function checkWinner(){
     if(gameObject.turn == 3){
       if(gameObject.userId == '1'){
@@ -328,7 +338,7 @@ $(document).ready(function(){
     }
     setTimeout(reset, 2000);
   }
-
+  //resets the turn to 1 and player 1 picks again//
   function reset(){
     data.update({turn: 1});
     if(gameObject.userId == '2'){
@@ -336,14 +346,14 @@ $(document).ready(function(){
       $('#choice2').text('');
       $('#instructions').text('Waiting for ' + gameObject.name + ' to make a choice.');
     }
+    //ensures the neither player disconnects during the timeout, if one does the turn is set to 0 until a new player is added//
     data.once('value', function(snapshot){
       if(snapshot.numChildren != 2){
-        console.log('hit');
         data.update({turn: 0});
       }
     });
   }
-
+  //chat functionality only works if two players are present//
   $('#send-button').on('click', function(){
     data.once('value', function(snapshot){
       var player1Exists = snapshot.child('players').child('1').exists();
@@ -356,10 +366,12 @@ $(document).ready(function(){
           data.child('chat').push({message: gameObject.name2 + ': ' + chat});
         }
         $('#chat').val('');
+      } else{
+        $('#chat').val('');
       }
     });
   });
-
+  //updates the chat-window each time a new chat child is pushed to firebase//
   data.child('chat').on("value", function(snapshot) {
     $('#chat-window').empty();
     snapshot.forEach(function(childSnap) {
