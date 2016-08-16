@@ -71,6 +71,7 @@ $(document).ready(function(){
             gameObject.ties = snapshot.val().ties;
             $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
             $('#chat-window').empty();
+            $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
             $("#player2").text(name);
             $("#wins2").text('Wins: ' + gameObject.wins2);
             $("#losses2").text('Losses: ' + gameObject.losses2);
@@ -135,6 +136,7 @@ $(document).ready(function(){
               $('#choice2').text('');
               $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
               $('#chat-window').empty();
+              $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
               $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
               $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
               $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
@@ -160,6 +162,7 @@ $(document).ready(function(){
           gameObject.losses = snapshot.val().losses;
           gameObject.ties = snapshot.val().ties;
           $('#instructions').text('Hi ' + name + '. You are player 2. Waiting for ' + gameObject.name + ' to make a choice.');
+          $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
           $("#player2").text(name);
           $("#wins2").text('Wins: ' + gameObject.wins2);
           $("#losses2").text('Losses: ' + gameObject.losses2);
@@ -189,6 +192,7 @@ $(document).ready(function(){
             $('#choice2').text('');
             $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
             $('#chat-window').empty();
+            $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
             $("#wins2").text('Wins: ' + snapshot.val().players[2].wins);
             $("#losses2").text('Losses: ' + snapshot.val().players[2].losses);
             $("#ties2").text('Ties: ' + snapshot.val().players[2].ties);
