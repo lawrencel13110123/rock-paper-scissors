@@ -33,66 +33,66 @@
 //   data.onDisconnect().update({turn: 0});
 // //   //resets the chat if a player disconnects//
 //   data.child('chat').onDisconnect().set({});
-  //if a player disconnects it notifies the remaining player and changes the DOM//
-  // data.child('players').on('child_removed', function(){
-  //   data.once('value', function(snapshot){
-  //     var player1Exists = snapshot.child('players').child('1').exists();
-  //     var player2Exists = snapshot.child('players').child('2').exists();
-  //     if(player1Exists && !player2Exists){
-  //       $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
-  //       $('#chat-window').empty();
-  //       $('#chat-window').append('<p>Player 2 has disconnected.');
-  //       $('#choice1').text('');
-  //       $('#choice2').text('');
-  //       $('#player2').text('');
-  //       $('#wins2').text('');
-  //       $('#losses2').text('');
-  //       $('#ties2').text('');
-  //       $('#choice-section').hide();
-  //     } else if (player2Exists && !player1Exists){
-  //       $('#instructions').text('Oops. It looks like player 1 has left the game. Waiting for a new player to join.');
-  //       $('#chat-window').empty();
-  //       $('#chat-window').append('<p>Player 1 has disconnected.');
-  //       $('#choice1').text('');
-  //       $('#choice2').text('');
-  //       $('#player1').text('');
-  //       $('#wins1').text('');
-  //       $('#losses1').text('');
-  //       $('#ties1').text('');
-  //       $('#choice-section').hide();
-  //     } else{
-  //       return;
-  //     }
-  //   });
-    //if player 1 disconnects this will change the DOM for player 2 when a NEW player 1 is added//
-    //this assumes player 1 disconnects and player 2 stays and waits for a new person to join as player 1//
-  //   data.child('players').on('child_added', function(){
-  //     data.once('value', function(snapshot){
-  //       var player1Exists = snapshot.child('players').child('1').exists();
-  //       if(player1Exists && gameObject.userId == '2'){
-  //         var player1Ref = data.child('players').child('1');
-  //         player1Ref.once('value', function(snapshot){
-  //           gameObject.name = snapshot.val().name;
-  //           gameObject.wins = snapshot.val().wins;
-  //           gameObject.losses = snapshot.val().losses;
-  //           gameObject.ties = snapshot.val().ties;
-  //           $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
-  //           $('#chat-window').empty();
-  //           $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
-  //           $("#player2").text(name);
-  //           $("#wins2").text('Wins: ' + gameObject.wins2);
-  //           $("#losses2").text('Losses: ' + gameObject.losses2);
-  //           $("#ties2").text('Ties: ' + gameObject.ties2);
-  //           $("#player1").text(gameObject.name);
-  //           $("#wins1").text('Wins: ' + gameObject.wins);
-  //           $("#losses1").text('Losses: ' + gameObject.losses);
-  //           $("#ties1").text('Ties: ' + gameObject.ties);
-  //         });
-  //       }
-  //     });
-  //   });
-  //
-  // });
+  // if a player disconnects it notifies the remaining player and changes the DOM//
+  data.child('players').on('child_removed', function(){
+    data.once('value', function(snapshot){
+      var player1Exists = snapshot.child('players').child('1').exists();
+      var player2Exists = snapshot.child('players').child('2').exists();
+      if(player1Exists && !player2Exists){
+        $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
+        $('#chat-window').empty();
+        $('#chat-window').append('<p>Player 2 has disconnected.');
+        $('#choice1').text('');
+        $('#choice2').text('');
+        $('#player2').text('');
+        $('#wins2').text('');
+        $('#losses2').text('');
+        $('#ties2').text('');
+        $('#choice-section').hide();
+      } else if (player2Exists && !player1Exists){
+        $('#instructions').text('Oops. It looks like player 1 has left the game. Waiting for a new player to join.');
+        $('#chat-window').empty();
+        $('#chat-window').append('<p>Player 1 has disconnected.');
+        $('#choice1').text('');
+        $('#choice2').text('');
+        $('#player1').text('');
+        $('#wins1').text('');
+        $('#losses1').text('');
+        $('#ties1').text('');
+        $('#choice-section').hide();
+      } else{
+        return;
+      }
+    });
+    // if player 1 disconnects this will change the DOM for player 2 when a NEW player 1 is added//
+    // this assumes player 1 disconnects and player 2 stays and waits for a new person to join as player 1//
+    data.child('players').on('child_added', function(){
+      data.once('value', function(snapshot){
+        var player1Exists = snapshot.child('players').child('1').exists();
+        if(player1Exists && gameObject.userId == '2'){
+          var player1Ref = data.child('players').child('1');
+          player1Ref.once('value', function(snapshot){
+            gameObject.name = snapshot.val().name;
+            gameObject.wins = snapshot.val().wins;
+            gameObject.losses = snapshot.val().losses;
+            gameObject.ties = snapshot.val().ties;
+            $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
+            $('#chat-window').empty();
+            $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
+            $("#player2").text(name);
+            $("#wins2").text('Wins: ' + gameObject.wins2);
+            $("#losses2").text('Losses: ' + gameObject.losses2);
+            $("#ties2").text('Ties: ' + gameObject.ties2);
+            $("#player1").text(gameObject.name);
+            $("#wins1").text('Wins: ' + gameObject.wins);
+            $("#losses1").text('Losses: ' + gameObject.losses);
+            $("#ties1").text('Ties: ' + gameObject.ties);
+          });
+        }
+      });
+    });
+
+  });
   //keeps the gameObject.turn up to date with firebase by monitoring all value changes//
   //runs the funtion necessary at each turn//
   // turn.on('value', function(snapshot){
