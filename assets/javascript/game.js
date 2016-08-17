@@ -76,6 +76,7 @@ $(document).ready(function(){
     assignPlayer(name);
     $('#name').hide();
     $('#submit-button').hide();
+    return false;
   });
 
   //function to assign player to player 1 or player 2//
@@ -332,6 +333,7 @@ $(document).ready(function(){
     var chat = $('#chat').val();
     sendChat(chat);
     $('#chat').val('');
+    return false;
   })
 
   //function to send chat to firebase, only works if two users are present//
@@ -339,8 +341,12 @@ $(document).ready(function(){
     if(player1Exists && player2Exists){
       if(gameObject.userId == '1'){
         data.child('chat').push({message: gameObject.name + ': ' + chat});
+        var log = $('#chat-window');
+        log.animate({ scrollTop: log.prop('scrollHeight')}, 1000);
       } else if(gameObject.userId == '2'){
         data.child('chat').push({message: gameObject.name2 + ': ' + chat});
+        var log = $('#chat-window');
+        log.animate({ scrollTop: log.prop('scrollHeight')}, 1000);
       }
     } else{
       return;
