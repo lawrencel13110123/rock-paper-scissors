@@ -58,11 +58,11 @@ $(document).ready(function(){
       gameObject.turn = 0;
     }
   });
+  //checks to see if changeDOM is true in firebase//
   data.child('changeDOM').on('value', function(snapshot){
     if(snapshot.val() == true){
-      console.log('hit');
       changeDOM1();
-    } else if(!snapshot){
+    } else{
       return;
     }
   });
@@ -70,7 +70,8 @@ $(document).ready(function(){
   $('#submit-button').on('click', function(){
     name = $('#name').val();
     assignPlayer(name);
-    $('#name').val('');
+    $('#name').hide();
+    $('#submit-button').hide();
   });
 
 
@@ -97,6 +98,7 @@ $(document).ready(function(){
       //check to see if player 2 exists in the database in case there is already a player 2 waiting for a new player 1, if player 2 does exist set the turn to 1//
       playersRef.once("value", function(snapshot) {
           if (player2Exists) {
+            data.update({changeDOM: true});
             data.update({turn: 1});
           }
       });
@@ -140,9 +142,8 @@ $(document).ready(function(){
       alert('Sorry the game is full. Try again shortly.');
     }
   }
-
+  //changes the DOM for player 1 WHEN player 2 joins the game//
   function changeDOM1(){
-    console.log('hit function')
     if(gameObject.userId == '1'){
       player2Ref.once("value", function(snapshot) {
         gameObject.name2 = snapshot.val().name;
@@ -161,6 +162,7 @@ $(document).ready(function(){
   function user1Choose(){
     //double check this will only work for player 1 and it is player 1 turn//
     if(gameObject.userId == '1' && gameObject.turn == 1){
+      $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
        $('#choice-section').show();
       //on click function to set player 1 choice and update firebase with user choice//
       $('.choice').on('click', function(){
@@ -174,7 +176,7 @@ $(document).ready(function(){
       });
     }
   }
-
+  //function for player 2 to choose rock, paper, or scissors//
   function user2Choose(){
     //double check this will only work for player 2 and it is player 2 turn//
     if(gameObject.userId == '2' && gameObject.turn == 2){
@@ -193,7 +195,6 @@ $(document).ready(function(){
   }
 
   function checkWinner(){
-    console.log('check winner hit');
     //ensure it is turn 3//
     if(gameObject.turn == 3){
       // player 2 changes the turn to 0 so the function only runs once//
@@ -308,8 +309,8 @@ $(document).ready(function(){
       $('#instructions').text('Waiting for ' + gameObject.name + ' to make a choice.');
     }
     //ensures the neither player disconnects during the timeout, if one does the turn is set to 0 until a new player is added so that the user1Choose function is NOT called//
-    data.once('value', function(snapshot){
-      if(snapshot.numChildren != 2){
+    playersRef.once('value', function(snapshot){
+      if(snapshot.numChildren() != 2){
         data.update({turn: 0});
       }
     });
@@ -346,68 +347,9 @@ $(document).ready(function(){
     });
   });
 
-  //monitors the playersRef in firebase and changes the DOM if a child (a player) is removed//
-  // playersRef.on('child_removed', function(){
-  //   console.log('hit');
-  //   //if player 1 exists and not player 2 change the DOM of player 1//
-  //   if(player1Exists && !player2Exists){
-  //     $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
-  //     $('#chat-window').empty();
-  //     $('#chat-window').append('<p>Player 2 has disconnected.');
-  //     $('#player2').text('');
-  //     $('#wins2').text('');
-  //     $('#losses2').text('');
-  //     $('#ties2').text('');
-  //     $('#choice-section').hide();
-  //     //if player 2 exists and not player 1 change the DOM of player 2//
-  //   } else if (player2Exists && !player1Exists){
-  //     $('#instructions').text('Oops. It looks like player 1 has left the game. Waiting for a new player to join.');
-  //     $('#chat-window').empty();
-  //     $('#chat-window').append('<p>Player 1 has disconnected.');
-  //     $('#player1').text('');
-  //     $('#wins1').text('');
-  //     $('#losses1').text('');
-  //     $('#ties1').text('');
-  //     $('#choice-section').hide();
-  //   } else{
-  //     return;
-  //   }
-    // playersRef.on('child_added', function(){
-    //   if(player1Exists && gameObject.userId == '2'){
-    //     player1Ref.once('value', function(snapshot){
-    //       gameObject.name = snapshot.val().name;
-    //       gameObject.wins = snapshot.val().wins;
-    //       gameObject.losses = snapshot.val().losses;
-    //       gameObject.ties = snapshot.val().ties;
-    //       $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
-    //       $('#chat-window').empty();
-    //       $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
-    //       $("#player1").text(gameObject.name);
-    //       $("#wins1").text('Wins: ' + gameObject.wins);
-    //       $("#losses1").text('Losses: ' + gameObject.losses);
-    //       $("#ties1").text('Ties: ' + gameObject.ties);
-    //     });
-    //   }
-      // if(gameObject.userId == '1' && player2Exists){
-      //   //get player 2 info from firebase//
-      //   player2Ref.once("value", function(snapshot) {
-      //     gameObject.name2 = snapshot.val().name;
-      //     $("#player2").text(gameObject.name2);
-      //     $('#instructions').text('It is your turn. Choose rock, paper, or scissors by clicking on a picture below.');
-      //     $('#chat-window').empty();
-      //     $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name2 + '. You can chat here.</p>');
-      //     $("#wins2").text('Wins: ' + snapshot.val().wins);
-      //     $("#losses2").text('Losses: ' + snapshot.val().losses);
-      //     $("#ties2").text('Ties: ' + snapshot.val().ties);
-      //   });
-      // }
-    // });
-  // });
-
+  //if a player disconnects it will notify the remaining player and change their DOM//
   data.child('players').on('child_removed', function(){
     data.once('value', function(snapshot){
-      var player1Exists = snapshot.child('players').child('1').exists();
-      var player2Exists = snapshot.child('players').child('2').exists();
       if(player1Exists && !player2Exists){
         $('#instructions').text('Oops. It looks like player 2 has left the game. Waiting for a new player to join.');
         $('#chat-window').empty();
@@ -434,13 +376,12 @@ $(document).ready(function(){
         return;
       }
     });
+
     //if player 1 disconnects this will change the DOM for player 2 when a NEW player 1 is added//
     //this assumes player 1 disconnects and player 2 stays and waits for a new person to join as player 1//
     data.child('players').on('child_added', function(){
       data.once('value', function(snapshot){
-        var player1Exists = snapshot.child('players').child('1').exists();
         if(player1Exists && gameObject.userId == '2'){
-          var player1Ref = data.child('players').child('1');
           player1Ref.once('value', function(snapshot){
             gameObject.name = snapshot.val().name;
             gameObject.wins = snapshot.val().wins;
@@ -449,10 +390,6 @@ $(document).ready(function(){
             $('#instructions').text('You are playing against ' + gameObject.name + '. Waiting for their choice.');
             $('#chat-window').empty();
             $('#chat-window').append('<p class="text-center">You are playing against ' + gameObject.name + '. You can chat here.</p>');
-            $("#player2").text(name);
-            $("#wins2").text('Wins: ' + gameObject.wins2);
-            $("#losses2").text('Losses: ' + gameObject.losses2);
-            $("#ties2").text('Ties: ' + gameObject.ties2);
             $("#player1").text(gameObject.name);
             $("#wins1").text('Wins: ' + gameObject.wins);
             $("#losses1").text('Losses: ' + gameObject.losses);
@@ -461,6 +398,5 @@ $(document).ready(function(){
         }
       });
     });
-
   });
 });
