@@ -12,4 +12,4 @@ A real-time, multi-player rock, paper, scissors game built using Firebase. The g
 
 [View the application live on Heroku!] (https://secret-wildwood-27387.herokuapp.com/)
 
-![](http://g.recordit.co/QtArR2mhNJ.gif)
+[View the demo on YouTube!](https://www.youtube.com/watch?v=2sv4epHIjhA)
